@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="layout" name="Signage Main layout">
+        <t t-call="web.layout">
+            <t t-set="html_data" t-value="{
+                'lang': lang and lang.replace('_', '-'),
+                'data-website-id': website.id if website else None,
+                'data-editable': '1' if editable else None,
+                'data-translatable': '1' if translatable else None,
+                'data-edit_translations': '1' if edit_translations else None,
+                'data-view-xmlid': xmlid if editable or translatable else None,
+                'data-main-object': repr(main_object) if editable or translatable else None,
+                'data-oe-company-name': res_company.name
+            }"/>
+            <t t-set="body_classname" t-value="'o_connected_user' if env['ir.ui.view'].user_has_groups('base.group_user') else None"/>
+            <t t-if="not title">
+                <t t-if="not additional_title and main_object and 'name' in main_object">
+                    <t t-set="additional_title" t-value="main_object.name"/>
+                </t>
+                <t t-if="main_object and 'website_meta_title' in main_object and main_object.website_meta_title">
+                    <t t-set="title" t-value="main_object.website_meta_title"/>
+                </t>
+                <t t-else="">
+                    <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t><t t-esc="(website or res_company).name"/></t>
+                </t>
+            </t>
+            <t t-set="x_icon" t-value="'/web/image/website/%s/favicon/' % website.id"/>
+            <t t-set="head_website">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                <meta name="description" t-att-content="main_object and 'website_meta_description' in main_object
+                    and main_object.website_meta_description or website_meta_description"/>
+                <meta name="keywords" t-att-content="main_object and 'website_meta_keywords' in main_object
+                    and main_object.website_meta_keywords or website_meta_keywords"/>
+                <meta name="generator" content="Odoo"/>
+
+                <!-- OpenGraph tags for Facebook sharing -->
+                <meta property="og:title" t-att-content="additional_title" />
+                <meta property="og:site_name" t-att-content="res_company.name" />
+                <t t-if="main_object and 'plain_content' in main_object and main_object.plain_content">
+                    <t t-set="og_description" t-value="main_object.plain_content[0:500]"/>
+                    <meta property="og:description" t-att-content="og_description" />
+                    <meta property="og:image" t-att-content="request.httprequest.url_root+'logo.png'"/>
+                    <meta property="og:url" t-att-content="request.httprequest.url_root+request.httprequest.path[1:end]"/>
+                </t>
+
+                <t t-set="languages" t-value="website.get_languages() if website else None"/>
+                <t t-if="request and request.website_multilang and website">
+                    <t t-foreach="website.get_alternate_languages(request.httprequest)" t-as="lg">
+                        <link rel="alternate" t-att-hreflang="lg['hreflang']" t-att-href="lg['href']"/>
+                    </t>
+                </t>
+
+                <script type="text/javascript">
+                    odoo.session_info = {
+                        is_superuser: <t t-esc="json.dumps(request.env.user._is_superuser())"/>,
+                        is_frontend: true,
+                    };
+                </script>
+
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_frontend" t-js="false"/>
+                <t t-call-assets="web_editor.summernote" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-js="false" groups="website.group_website_publisher"/>
+
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.assets_frontend" t-css="false"/>
+                <t t-call-assets="web_editor.summernote" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="web_editor.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+                <t t-call-assets="website.assets_editor" t-css="false" groups="website.group_website_publisher"/>
+            </t>
+            <t t-set="head" t-value="head_website + (head or '')"/>
+            <t t-if="edit">
+                <nav groups="base.group_user" t-if="website and menu_data" id="oe_main_menu_navbar" class="o_main_navbar">
+                    <ul id="oe_applications">
+                        <li class="dropdown active">
+                            <a class="dropdown full" data-toggle="dropdown" href="#">
+                                <i class="fa fa-th-large"/> WEBSITE <b class="caret"/>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li t-as="menu" t-foreach="menu_data['children']">
+                                    <t t-set="debug_param" t-value="'?&amp;debug=' if debug else ''"/>
+                                    <a t-att-class="'oe_menu_toggler' if menu.get('children') else 'oe_menu_leaf'" t-att-data-action-id="menu['action'] and menu['action'].split(',')[1] or None" t-att-data-action-model="menu['action'] and menu['action'].split(',')[0] or None" t-att-data-menu="menu['id']" t-att-href="'/web%s#menu_id=%s&amp;action=%s' % (debug_param, menu['id'], menu['action'] and menu['action'].split(',')[1] or '')">
+                                        <i t-attf-class="fa #{menu.get('icon')} fa-lg fa-fw" t-if="menu.get('icon')"/>
+                                        <span class="oe_menu_text">
+                                            <t t-esc="menu['name']"/>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <button type="button" class="fa fa-bars pull-right visible-xs-block o_mobile_menu_toggle"/>
+
+                    <div class="o_menu_brand">Website</div>
+
+                    <ul class="o_menu_sections" groups="website.group_website_designer">
+                        <!-- Content -->
+                        <li class="dropdown content" t-if="editable">
+                            <a id="content-menu-button" class="dropdown-toggle waves" data-toggle="dropdown" href="#">Content</a>
+                            <ul class="dropdown-menu oe_content_menu" role="menu">
+                                <li>
+                                    <a data-action="edit_menu" href="#" title="Edit Top Menu">Edit Menu</a>
+                                </li>
+                                <li t-if="deletable" role="separator" class="divider"></li>
+                                <li t-if="deletable"><a href="#" data-action="rename_page">Rename Page</a></li>
+                                <li t-if="deletable"><a href="#" data-action="delete_page">Delete Page</a></li>
+                            </ul>
+                        </li>
+                        <!-- Customize -->
+                        <li class="dropdown" id="customize-menu">
+                            <a class="dropdown-toggle waves" data-toggle="dropdown" href="#" id="customize-menu-button">Customize</a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li id="html_editor"><a data-action="ace" href="#advanced-view-editor">HTML Editor</a></li>
+                                <li id="theme_customize"><a href="#">Customize Theme</a></li>
+                                <li id="install_apps"><a href="/web#return_label=Website&amp;action=website.action_module_website">Install Apps</a></li>
+                                <li class="divider"/>
+                            </ul>
+                        </li>
+                        <!-- Promote -->
+                        <li class="dropdown">
+                            <a class="dropdown-toggle waves" data-toggle="dropdown" href="#" id="promote-menu-button">Promote</a>
+                            <ul class="dropdown-menu oe_promote_menu" role="menu">
+                                <li><a data-action="promote-current-page" href="#" title="Promote page on the web">Optimize SEO</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="o_menu_systray hidden-xs" groups="website.group_website_publisher">
+                        <!-- Mobile preview -->
+                        <li class="o_mobile_preview">
+                            <a data-action="show-mobile-preview" href="#"><span title="Mobile preview" class="fa fa-mobile"/></a>
+                        </li>
+                        <!-- Page Edition -->
+                        <li>
+                            <a data-action="new_page" href="#" data-toggle="modal" data-target="#o_website_add_page_modal"><span class="fa fa-plus"/>New</a>
+                        </li>
+                        <li t-if="not translatable">
+                            <a data-action="edit" href="#"><span class="fa fa-pencil"/>Edit</a>
+                        </li>
+                        <li t-if="translatable">
+                            <a data-action="translate" href="#">TRANSLATE</a>
+                        </li>
+                        <li t-if="translatable">
+                            <a data-action="edit_master" href="#">or Edit Master</a>
+                        </li>
+                    </ul>
+                </nav>
+            </t>
+
+            <div id="wrapwrap" t-att-class="pageName or ''">
+                <header>
+<!--
+                    <div class="navbar navbar-default navbar-static-top">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-top-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a class="navbar-brand" href="/" t-if="website" t-field="website.name">My Website</a>
+                            </div>
+                            <div class="collapse navbar-collapse navbar-top-collapse">
+                                <ul class="nav navbar-nav navbar-right" id="top_menu">
+                                    <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                                        <t t-call="website.submenu"/>
+                                    </t>
+                                    <li class="divider" t-ignore="true" t-if="website.user_id != user_id"/>
+                                    <li class="dropdown" t-ignore="true" t-if="website.user_id != user_id">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <b>
+                                                <span t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
+                                                <span class="caret"></span>
+                                            </b>
+                                        </a>
+                                        <ul class="dropdown-menu js_usermenu" role="menu">
+                                            <li id="o_logout"><a t-attf-href="/web/session/logout?redirect=/" role="menuitem">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+-->
+                </header>
+                <main>
+                    <t t-raw="0"/>
+                </main>
+<!--
+                <footer>
+                    <div id="footer">
+                    </div>
+                </footer>
+-->
+            </div>
+            <div groups="website.group_website_publisher" class="modal" id="o_website_add_page_modal">
+                <div class="modal-dialog modal-lg">
+                    <ul>
+                        <li groups="website.group_website_designer"><a href="#" data-action="new_page"><i class="fa fa-file-o"/><p>New Page</p></a></li>
+                    </ul>
+                </div>
+            </div>
+            <script id="tracking_code" t-if="website and website.google_analytics_key and not editable">
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', _.str.trim('<t t-esc="website.google_analytics_key"/>'), 'auto');
+                ga('send','pageview');
+            </script>
+        </t>
+    </template>
+
+    <template id="signage_list" name="Signage List">
+        <t t-call="website.layout">
+            <div id="wrap" class="container">
+                <div class="oe_structure oe_empty" />
+                <div class="row col-md-offset-2">
+                    <h1>Signage</h1>
+                    <ul t-foreach="signages" t-as="signage">
+                        <li>
+                            <span t-field="signage.name" />
+<!--
+                            <a t-att-href="'/signage/%s/edit' % signage.name">
+                                <span t-field="signage.name" />
+                            </a>
+-->
+                            <ul t-foreach="signage.area_ids" t-as="area">
+                                <li>
+                                    <span t-field="area.name" />
+                                    Limit
+                                    <span t-field="area.limit" />
+                                    <ul>
+                                        <t t-foreach="area.page_ids" t-as="page">
+                                            <li>
+                                                <a t-att-href="'/signage/%s/edit' % page.id">
+                                                    <span t-field="page.name" />
+                                                </a>
+                                                Offset
+                                                <span t-field="page.offset" />
+                                            </li>
+                                        </t>
+                                        <li>
+                                            <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)">
+                                                <span>New Page</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="signage_overview" name="Signage Overview">
+        <t t-call="website.layout">
+            <div id="wrap" class="container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-offset-2 mt32">
+                            <ul t-foreach="signages" t-as="signage">
+                                <li>
+                                    <h2 t-field="signage.name" />
+                                    <ul t-foreach="signage.area_ids" t-as="area">
+                                        <li>
+                                            <a t-att-href="'/signage/%s/%s?token=%s' % (signage.name, area.name, signage.token)" t-if="signage.token"><span t-field="area.name" /></a>
+                                            <span t-if="signage.token">(<t t-esc="'http://%s/signage/%s/%s?token=%s' % (website.domain, signage.name, area.name, signage.token)" />)</span>
+                                            <a t-att-href="'/signage/%s/%s' % (signage.name, area.name)" t-if="not signage.token"><span t-field="area.name" /></a>
+                                            <ul>
+                                                <t t-foreach="area.page_ids" t-as="page">
+                                                    <li>
+                                                        <span t-field="page.name" />
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="website.signage_page_template" name="Page Template">
+        <t t-call="signage.layout">
+            <style>
+                <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+            </style>
+            <style>
+                html, body {
+                    height: 100%;
+                    margin: 0;
+                }
+                main {
+                    font-family: 'PT Sans Narrow', sans-serif !important;
+                    height: 100%;
+                }
+            </style>
+            <div id="wrap">
+                <div class="oe_structure oe_empty"/>
+            </div>
+        </t>
+    </template>
+
+<!--
+    <template id="signage_main" name="Signage Main">
+        <t t-call="signage.layout">
+            <style>
+                <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+            </style>
+            <style>
+                body {
+                font-family: 'PT Sans Narrow', sans-serif;
+                }
+            </style>
+            <div style="height: 100%; background-color: #94A8B2;">
+                <section style="height: 100%; background-color: #94A8B2;">
+                    <div class="container" style="width: 100%; height: 100%; padding: 0px;">
+                        <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.4% 0.4% 0.2% 0.4%;">
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #DEE6ED; position: relative; float: left;">
+                                <t t-call="quarter1" />
+                            </div>
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #9AE5F8; position: relative; float: left;">
+                                <t t-call="quarter2" />
+                            </div>
+                        </div>
+                        <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.2% 0.4% 0.4% 0.4%;">
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #434C5A; position: relative; float: left; color: #434C5A;">
+                                <t t-call="quarter3" />
+                            </div>
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #005084; position: relative; float: left; color: #fff;">
+                                <t t-call="quarter4" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+-->
+
+    <template id="signage_demo" name="Demo Page for Signage">
+        <t t-call="website.layout">
+            <style>
+                <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+            </style>
+            <style>
+                body {
+                    font-family: 'PT Sans Narrow', sans-serif;
+                }
+            </style>
+            <div style="height: 100%; background-color: #94A8B2;">
+                <section style="height: 100%; background-color: #94A8B2;">
+                    <div class="container" style="width: 100%; height: 100%; padding: 0px;">
+                        <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.4% 0.4% 0.2% 0.4%;">
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #DEE6ED; position: relative; float: left;">
+                                <h3 style="margin-top: 15px; text-align: center; color: #005084;">
+                                    <b>Säve workshop information guide</b>
+                                </h3>
+                                <hr style="margin-top: 10px; margin-bottom: 0px; width: 90%; border-color: #00ACE2;" />
+                                <div style="width: 100%; height: 85%; padding: 15px 30px 15px 30px;">
+                                    <div style="width: 100%; height: 30%">
+                                        <div style="width: 50%; height: 100%; padding: 0% 1% 1% 0%; float: left;">
+                                            <span style="font-size: 18px; color: #00ACE2;">
+                                                <b>TODAY'S WORKSHOP HOST:</b>
+                                            </span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">
+                                                <b>Olle Olsson  Mobile: 071-123456</b>
+                                            </span>
+                                            <br />
+                                            <span style="font-size: 15px; color: #005084;">Contact the host if you have any need of tools or moving cars...</span>
+                                        </div>
+                                        <div style="width: 50%; height: 100%; padding: 0% 0% 1% 1%; float: right;">
+                                            <span style="font-size: 18px; color: #00ACE2;">
+                                                <b>TODAY'S VISIT:</b>
+                                            </span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">
+                                                <b>Namn Namnsson Företag AB</b>
+                                            </span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">
+                                                <b>Namn Namnsson Företag AB</b>
+                                            </span>
+                                            <br />
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%; height: 70%">
+                                        <div style="width: 50%; height: 100%; padding: 1% 1% 0% 0%; float: left;">
+                                            <span style="font-size: 18px; color: #00ACE2;">
+                                                <b>CONTACTS:</b>
+                                            </span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">Jan Johansson - 072-1843788</span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084; font-style: italic;">Workshop Team Leader</span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">Magnus Falk - 072-1843900</span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084; font-style: italic;">Workshop Coordinatior</span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">Melanie D'Avila - 072-1843781</span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084; font-style: italic;">Säve Reception</span>
+                                            <br />
+                                        </div>
+                                        <div style="width: 50%; height: 100%; padding: 1% 0% 0% 1%; float: right;">
+                                            <span style="font-size: 18px; color: #00ACE2;">
+                                                <b>SPECIAL EVENTS:</b>
+                                            </span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">- Today we will have a lot of driving outside, please be careful in the area.</span>
+                                            <br />
+                                            <span style="font-size: 18px; color: #005084;">- Rebuild of alarmsystem will take place with some "noise" during the day.</span>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #9AE5F8; position: relative; float: left; color: #434C5A;">
+                                <h3 style="margin-top: 15px; text-align: center;">
+                                    <b>Today's ongoing work</b>
+                                    <b style="float: right; padding-right: 15px; color: #005084;">1/2</b>
+                                </h3>
+                                <div style="width: 100%; padding: 15px;">
+                                    <table style="width: 100%; font-size: 18px;">
+                                        <tr style="border-bottom: 1px solid #00ace2;">
+                                            <th>Station</th>
+                                            <th>Worktask</th>
+                                            <th>Delivery</th>
+                                            <th>Mechanic</th>
+                                            <th>Requester</th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Stn1</b>
+                                            </td>
+                                            <td>Delivery Service H54</td>
+                                            <td>15,00</td>
+                                            <td>Robort U</td>
+                                            <td>Joakim J</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Stn2</b>
+                                            </td>
+                                            <td>Change alternator</td>
+                                            <td>21/8</td>
+                                            <td>Henrik K</td>
+                                            <td>Roger M</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Stn3</b>
+                                            </td>
+                                            <td>Engine mounts exchange</td>
+                                            <td>28/8</td>
+                                            <td>Jörgen V</td>
+                                            <td>Jesper M</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Stn4</b>
+                                            </td>
+                                            <td>Prep av bilar för Lync&amp;Co</td>
+                                            <td>25/8</td>
+                                            <td>Marin L</td>
+                                            <td>Viktor K</td>
+                                        </tr>
+                                        <tr>
+                                            <td />
+                                            <td>
+                                                <ul style="font-size: 15px; font-style: italic;">
+                                                    <li>Leveransservice CX</li>
+                                                    <li>Demot avgasrör</li>
+                                                    <li>Rutbyte S204</li>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul style="font-size: 15px; font-style: italic;">
+                                                    <li>26/8</li>
+                                                    <li>26/8</li>
+                                                    <li>3/9</li>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul style="font-size: 15px; font-style: italic;">
+                                                    <li>Jörgen V</li>
+                                                    <li>Henrik K</li>
+                                                    <li>Robert U</li>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <ul style="font-size: 15px; font-style: italic;">
+                                                    <li>Joakim J</li>
+                                                    <li>Roger M</li>
+                                                    <li>Jesper M</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Stn5</b>
+                                            </td>
+                                            <td>Leveransservice CX</td>
+                                            <td>22/8</td>
+                                            <td>Patrik D</td>
+                                            <td>Joakim J</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.2% 0.4% 0.4% 0.4%;">
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #434C5A; position: relative; float: left;">
+                                <div style="width: 66.67%; float: left;">
+                                    <hr style="margin-top: 7%; width: 90%; border-color: #00ACE2;" />
+                                    <h3 style="margin-left: 1em; width: 70%; color: #00ACE2;">
+                                        <b>2. Rule - Clothing</b>
+                                    </h3>
+                                    <ul style="width: 70%">
+                                        <li style="color: #fff;">
+                                            <h3>
+                                                <b>Use appropriate safety clothes, if you need to borrow some - speach to the workshop host.</b>
+                                            </h3>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div style="width: 33.33%; height: 100%; background-image: url('/website/static/src/img/library/mobile.jpg'); background-repeat: no-repeat; background-size: cover; background-position: right; padding: 0px; position: relative; float: right;">
+                                    <div style="height: 100%; width: 40px; position: absolute; top: 0px; left: 0px; overflow: hidden;">
+                                        <div style="width: 50px; height: 100%; border-top: 600px solid transparent; border-left: 40px solid #434C5A;" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #005084; position: relative; float: left; color: #fff;">
+                                <h3 style="margin-top: 15px; text-align: center;">
+                                    <b>Calendar week planning</b>
+                                    <b style="float: right; padding-right: 15px;">1/2</b>
+                                </h3>
+                                <div style="width: 100%; padding: 15px;">
+                                    <table style="width: 100%; font-size: 18px;">
+                                        <tr style="border-bottom: 1px solid #00ace2;">
+                                            <th>Name</th>
+                                            <th>Mon</th>
+                                            <th>Tue</th>
+                                            <th>Wed</th>
+                                            <th>Thu</th>
+                                            <th>Fri</th>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #00ace2;">
+                                            <td>
+                                                <b>Henrik</b>
+                                            </td>
+                                            <td>
+                                                Montera svetsat
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Montera svetsat
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Montera svetsat
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Montera svetsat
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Montera svetsat
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #00ace2;">
+                                            <td>
+                                                <b>Martin</b>
+                                            </td>
+                                            <td>
+                                                Avrustning #98
+                                                <br />
+                                                <b>25%</b>
+                                            </td>
+                                            <td>
+                                                Avrustning #98
+                                                <br />
+                                                <b>25%</b>
+                                            </td>
+                                            <td>
+                                                Avrustning #98
+                                                <br />
+                                                <b>25%</b>
+                                            </td>
+                                            <td>
+                                                Avrustning #98
+                                                <br />
+                                                <b>25%</b>
+                                            </td>
+                                            <td>
+                                                Avrustning #98
+                                                <br />
+                                                <b>25%</b>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>Robert</b>
+                                            </td>
+                                            <td>
+                                                Bromsskrivsbyte
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Bromsskrivsbyte
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Bromsskrivsbyte
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Bromsskrivsbyte
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                            <td>
+                                                Bromsskrivsbyte
+                                                <br />
+                                                <b>75%</b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <record id="menu_demo" model="website.menu">
+        <field name="name">Signage Demo</field>
+        <field name="url">/signage/demo</field>
+        <field name="parent_id" ref="website.main_menu" />
+    </record>
+
+</odoo>
