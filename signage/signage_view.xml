@@ -105,10 +105,10 @@
       <field name="model">signage.area</field>
       <field name="arch" type="xml">
         <form string="Area">
-            <group>
-                <field name="name" />
-                <field name="limit" />
-            </group>
+          <group>
+            <field name="name" />
+            <field name="limit" />
+          </group>
           <notebook>
             <page string="Pages">
               <field name="page_ids">
@@ -124,22 +124,20 @@
         </form>
       </field>
     </record>
-
-        <record id="calculate_token" model="ir.actions.server">
-            <field name="name">Calculate Token</field>
-            <field name="model_id" ref="signage.model_signage_signage"/>
-            <field name="state">code</field>
-            <field name="code">for o in object.browse(context.get('active_ids', [])):
-    o.write({'token': o.get_token()})
-            </field>
-        </record>
-
-        <record id="ir_values_calculate_token" model="ir.values">
-            <field name="name">Calculate Token</field>
-            <field name="model">signage.signage</field>
-            <field name="key2">client_action_multi</field>
-            <field name="value" eval="'ir.actions.server,%s' %ref('signage.calculate_token')"/>
-        </record>
-
+    <record id="calculate_token" model="ir.actions.server">
+      <field name="name">Calculate Token</field>
+      <field name="model_id" ref="signage.model_signage_signage" />
+      <field name="state">code</field>
+      <field name="code">
+        for o in object.browse(context.get('active_ids', [])):
+        o.write({'token': o.get_token()})
+      </field>
+    </record>
+    <record id="ir_values_calculate_token" model="ir.values">
+      <field name="name">Calculate Token</field>
+      <field name="model">signage.signage</field>
+      <field name="key2">client_action_multi</field>
+      <field name="value" eval="'ir.actions.server,%s' %ref('signage.calculate_token')" />
+    </record>
   </data>
 </openerp>
