@@ -160,6 +160,20 @@ class WebsiteSignage(http.Controller):
                 return request.render('website.403', {})
         return False
 
+    @http.route(['/signage/<string:signage>/all'],type='http', auth='public', website=True)
+    def signage_view_all(self, signage, area, **post): #return the last page from a specified area
+        signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
+        if signage:
+            if signage.token and post.get('token') and signage.token == post.get('token'):
+                area_ids = request.env['signage.area'].sudo().search([('signage_id', '=', signage.id)],order=name)
+                area_list = []
+                for area in signage.area_ids.sorted(lambda a: a.name):
+                    area_list.append(request.render(area.get_next_page().template_id.key, {'signage': signage, 'area': area, 'page': area.last_page}))
+                return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
+            else:
+                return request.render('website.403', {})
+        return False
+
     @http.route(['/signage/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
     def signage_edit_page(self, page, **post): #return a specified page and activate edit mode
         return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True})
