@@ -27,6 +27,16 @@ import math
 import werkzeug
 from werkzeug.exceptions import NotFound
 
+from bokeh.io import show, output_file
+from bokeh.models import ColumnDataSource
+from bokeh.palettes import Spectral6
+from bokeh.plotting import figure
+from bokeh.transform import factor_cmap
+from bokeh.io import export_png
+from cStringIO import StringIO
+
+
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -172,5 +182,28 @@ class WebsiteSignage(http.Controller):
     @http.route(['/signage/demo'], type='http', auth='public', website=True)
     def signage_demo(self):
         return request.render('signage.signage_demo', {})
+
+    @http.route(['/signage/image/orders.svg'], type='http', auth='public', website=True)
+    def signage_square_5(self):
+        fruits = ['Onsdag', 'Torsdag', 'Fredag', u'Måndag', 'Tisdag']
+        counts = [55, 33, 44, 22, 44]
+
+        source = ColumnDataSource(data=dict(fruits=fruits, counts=counts))
+
+        p = figure(x_range=fruits, plot_height=350, toolbar_location=None, title="Order statistik")
+        p.vbar(x='fruits', top='counts', width=0.9, source=source, legend="fruits",
+               line_color='white', fill_color=factor_cmap('fruits', palette=Spectral6, factors=fruits))
+
+        p.xgrid.grid_line_color = None
+        p.y_range.start = 0
+        p.y_range.end = 70
+        p.legend.orientation = "horizontal"
+        p.legend.location = "top_center"
+
+        # export_png(p, filename="plot.png")
+        p.output_backend = "svg"
+        return http.send_file(StringIO(p),mimetype='image/svg+xml')
+
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
