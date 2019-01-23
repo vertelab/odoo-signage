@@ -24,12 +24,12 @@ Financed by CEVT AB
     'data': [
         'signage_view.xml',
         'templates.xml',
-        'tmp_demo_index.xml',
-        'tmp_layout.xml',
+        'tmpl_demo_index.xml',
+        'tmpl_layout.xml',
         'tmpl_square_5.xml',
-        'tmp_signage_list.xml',
-        'tmp_signage_overview.xml',
-        'tmp_signage_page_template.xml',
+        'tmpl_signage_list.xml',
+        'tmpl_signage_overview.xml',
+        'tmpl_signage_page_template.xml',
     ],
     'installable': True,
 }

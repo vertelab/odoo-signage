@@ -35,7 +35,11 @@ from bokeh.transform import factor_cmap
 from bokeh.io import export_png
 from cStringIO import StringIO
 
-
+from bokeh.io import export_svgs
+from bokeh.io.export import get_svgs
+from bokeh.io.export import get_screenshot_as_png
+from bokeh.io.export import webdriver_control
+from xvfbwrapper import Xvfb
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -161,14 +165,14 @@ class WebsiteSignage(http.Controller):
         return False
 
     @http.route(['/signage/<string:signage>/all'],type='http', auth='public', website=True)
-    def signage_view_all(self, signage, area, **post): #return the last page from a specified area
+    def signage_view_all(self, signage, **post): #return the last page from a specified area
         signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
         if signage:
             if signage.token and post.get('token') and signage.token == post.get('token'):
-                area_ids = request.env['signage.area'].sudo().search([('signage_id', '=', signage.id)],order=name)
                 area_list = []
                 for area in signage.area_ids.sorted(lambda a: a.name):
-                    area_list.append(request.render(area.get_next_page().template_id.key, {'signage': signage, 'area': area, 'page': area.last_page}))
+                    res = area.get_next_page().template_id.render({'signage': signage, 'area': area, 'page': area.last_page, 'hide_header': True})
+                    area_list.append(res)
                 return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
             else:
                 return request.render('website.403', {})
@@ -214,9 +218,31 @@ class WebsiteSignage(http.Controller):
         p.legend.orientation = "horizontal"
         p.legend.location = "top_center"
 
+        #show(p)
+        #p.output_backend = "svg"
+        #export_svgs(p, filename="plot.svg")
+        #t = NamedTemporaryFile(suffix=".svg")
+        #export_svgs(p, filename=t.name, webdriver=WebDriver())
+        #t.write(p)
+        #t.seek(0)
+        #print(t.read())
+        #t.close()
+        
+        vdisplay = Xvfb()
+        vdisplay.start()
+
+        # launch stuff inside
+        # virtual display here.
+        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
+
+        vdisplay.stop()
+
+        # launch stuff inside virtual display here.
+        # It starts/stops around this code block.
+
         # export_png(p, filename="plot.png")
-        p.output_backend = "svg"
-        return http.send_file(StringIO(p),mimetype='image/svg+xml')
+        # p.output_backend = "svg"
+        return http.send_file(StringIO(png),mimetype='image/png')
 
 
 

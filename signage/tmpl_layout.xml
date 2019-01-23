@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <template id="layout_NOT_IN_USE" name="Signage Main layout">
-    <t t-call="web.layout_NOT_IN_USE">
+  <template id="layout">
+    <!-- ## USE hide_header=TRUE WHEN PAGE IS 
+         INCLUDED IN A ROTARY TRAY AND HEADER/FOOTER 
+         SHALL NOT BE EXECUTED FOR EVERY SINGEL PAGE -->
+    <t t-if="hide_header">
+      <main>
+        <t t-raw="0" />
+      </main>
+    </t>
+    <!-- ## IN ANY OTHER CASE, INCLUDE HEADER / FOOTER -->
+    <t t-if="not hide_header">
+      <t t-call="signage.layout_header_footer" />
+    </t>
+  </template>
+  <!-- // SHORT TEMPLATE, INCOMPLETE -->
+  <!-- ## PAGE TEMPLATE, COMPLETE -->
+  <template id="layout_header_footer" name="Signage Main layout">
+    <t t-call="web.layout">
       <t t-set="html_data" t-value="{
                 'lang': lang and lang.replace('_', '-'),
                 'data-website-id': website.id if website else None,
@@ -12,6 +28,7 @@
                 'data-main-object': repr(main_object) if editable or translatable else None,
                 'data-oe-company-name': res_company.name
             }" />
+      <!-- ## TITLE -->
       <t t-set="body_classname" t-value="'o_connected_user' if env['ir.ui.view'].user_has_groups('base.group_user') else None" />
       <t t-if="not title">
         <t t-if="not additional_title and main_object and 'name' in main_object">
@@ -206,6 +223,7 @@
                </div>
           -->
         </header>
+        <!-- // ## HEADER -->
         <main>
           <t t-raw="0" />
         </main>
@@ -242,45 +260,4 @@
     </t>
     <!-- // EDN OF TEMPLATE ::  <template id="layout" name="Signage Main layout"> -->
   </template>
-  <!--
-       <template id="signage_main" name="Signage Main">
-       <t t-call="signage.layout">
-       <style>
-       <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
-       </style>
-       <style>
-       body {
-       font-family: 'PT Sans Narrow', sans-serif;
-       }
-       </style>
-       <div style="height: 100%; background-color: #94A8B2;">
-       <section style="height: 100%; background-color: #94A8B2;">
-       <div class="container" style="width: 100%; height: 100%; padding: 0px;">
-       <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.4% 0.4% 0.2% 0.4%;">
-       <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #DEE6ED; position: relative; float: left;">
-       <t t-call="quarter1" />
-       </div>
-       <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #9AE5F8; position: relative; float: left;">
-       <t t-call="quarter2" />
-       </div>
-       </div>
-       <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.2% 0.4% 0.4% 0.4%;">
-       <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #434C5A; position: relative; float: left; color: #434C5A;">
-       <t t-call="quarter3" />
-       </div>
-       <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #005084; position: relative; float: left; color: #fff;">
-       <t t-call="quarter4" />
-       </div>
-       </div>
-       </div>
-       </section>
-       </div>
-       </t>
-       </template>
-  -->
-  <record id="menu_demo" model="website.menu">
-    <field name="name">Signage Demo</field>
-    <field name="url">/signage/demo</field>
-    <field name="parent_id" ref="website.main_menu" />
-  </record>
 </odoo>
