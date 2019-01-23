@@ -19,7 +19,7 @@ Financed by CEVT AB
     'website': 'http://www.vertel.se',
     'category': 'website',
     'sequence': 0,
-    'depends': ['website'],
+    'depends': ['website', 'document'],
     'demo': [],
     'data': [
         'signage_view.xml',

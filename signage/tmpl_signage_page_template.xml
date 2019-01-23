@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<openerp>
+<data>
   <template id="website.signage_page_template" name="Page Template">
     <t t-call="signage.layout">
       <style>
@@ -20,4 +21,5 @@
       </div>
     </t>
   </template>
-</odoo>
+</data>
+</openerp>

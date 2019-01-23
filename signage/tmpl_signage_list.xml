@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<openerp>
+<data>
   <!-- ## EDIT SHOWCASE-->
   <template id="signage_list" name="Signage List">
     <title>Edit your showcase</title>
@@ -165,4 +166,5 @@
       </div>
     </t>
   </template>
-</odoo>
+</data>
+</openerp>

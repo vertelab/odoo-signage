@@ -98,7 +98,8 @@
         <p>Also you will find here all the related areas and pages by clicking on any individual signage.</p>
       </field>
     </record>
-    <menuitem name="Signage" action="action_signage" id="menu_signage" parent="website.menu_dashboard" groups="base.group_system" sequence="100" />
+    <menuitem name="Signage" id="main_menu_signage" parent="knowledge.menu_document" sequence="20" />
+    <menuitem name="Signage" action="action_signage" id="menu_signage" parent="signage.main_menu_signage" groups="base.group_system" sequence="10" />
     <!-- -->
     <record id="view_area_form" model="ir.ui.view">
       <field name="name">area.form</field>

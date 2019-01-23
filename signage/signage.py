@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Odoo, Open Source Enterprise Resource Management Solution, third party addon
+# OpenERP, Open Source Enterprise Resource Management Solution, third party addon
 # Copyright (C) 2017- Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from odoo import api, fields, models,_
-from odoo import http
-from odoo.http import request
+from openerp import api, fields, models,_
+from openerp import http
+from openerp.http import request
 import hashlib
 import datetime
 import math
@@ -43,6 +43,9 @@ from xvfbwrapper import Xvfb
 
 import logging
 _logger = logging.getLogger(__name__)
+
+# sudo pip install bokeh
+# sudo pip install xvfbwrapper
 
 
 class signage(models.Model):
@@ -227,13 +230,13 @@ class WebsiteSignage(http.Controller):
         #t.seek(0)
         #print(t.read())
         #t.close()
-        
+
         vdisplay = Xvfb()
         vdisplay.start()
 
         # launch stuff inside
         # virtual display here.
-        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
+        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())
 
         vdisplay.stop()
 

@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Odoo, Open Source Enterprise Resource Management Solution, third party addon
+# OpenERP, Open Source Enterprise Resource Management Solution, third party addon
 # Copyright (C) 2017- Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from odoo import api, fields, models,_
-from odoo import http
-from odoo.http import request
+from openerp import api, fields, models,_
+from openerp import http
+from openerp.http import request
 from datetime import timedelta
 
 import logging

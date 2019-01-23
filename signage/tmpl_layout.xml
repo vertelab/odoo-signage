@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<openerp>
+<data>
   <template id="layout">
     <!-- ## USE hide_header=TRUE WHEN PAGE IS 
          INCLUDED IN A ROTARY TRAY AND HEADER/FOOTER 
@@ -260,4 +261,5 @@
     </t>
     <!-- // EDN OF TEMPLATE ::  <template id="layout" name="Signage Main layout"> -->
   </template>
-</odoo>
+</data>
+</openerp>

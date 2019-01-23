@@ -1,1 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_signage_signage_manager,signage.signage.manager,model_signage_signage,base.group_website_designer,1,1,1,1
+access_signage_signage_user,signage.signage.user,model_signage_signage,base.group_website_publisher,1,1,1,1
+access_signage_area_manager,signage.area.manager,model_signage_area,base.group_website_designer,1,1,1,1
+access_signage_area_user,signage.area.user,model_signage_area,base.group_website_publisher,1,1,1,1
+access_signage_area_page_manager,signage.area.page.manager,model_signage_area_page,base.group_website_designer,1,1,1,1
+access_signage_area_page_user,signage.area.page.user,model_signage_area_page,base.group_website_publisher,1,1,1,1

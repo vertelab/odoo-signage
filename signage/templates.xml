@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
+<openerp>
+<data>
   <template id="layout_NOT_IN_USE" name="Signage Main layout">
     <t t-call="web.layout_NOT_IN_USE">
       <t t-set="html_data" t-value="{
@@ -283,4 +284,5 @@
     <field name="url">/signage/demo</field>
     <field name="parent_id" ref="website.main_menu" />
   </record>
-</odoo>
+</data>
+</openerp>
