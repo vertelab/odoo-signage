@@ -41,7 +41,7 @@
                               <span class="fa fa-file-code-o fa-2x" style="margin: 0 auto;" data-original-title="Get content for project" t-att-title="'Get content for project %s' % signage.id" />
                               Look, edit:
 
-                              <a t-att-href="'/signage/%s/edit' % page.id" target="_blank" title="View and/or edit page.">
+                              <a t-att-href="'/signage_admin/%s/edit' % page.id" target="_blank" title="View and/or edit page.">
                                 <span t-field="page.name" />
                               </a>
                               <br />
@@ -50,7 +50,7 @@
                                    <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undo!" t-att-title="'Delete %. Ca NOT undo! %s' % page.name" />
                               -->
                               <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undu!" title="Delete. Can NOT undu!" />
-                              <a t-att-href="'/signage/%s/delete' % page.id">
+                              <a t-att-href="'/signage_admin/%s/delete' % page.id">
                                 <span t-field="page.name" />
                               </a>
                               Offset
@@ -60,7 +60,7 @@
                           <li>
                             <!-- ## ADD PAGE-->
                             <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new page" title="Add new page" />
-                            <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
+                            <a t-att-href="'/signage_admin/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
                               <span>New Page</span>
                             </a>
                           </li>
@@ -72,7 +72,7 @@
                 </div>
                 <!-- ## ADD AREA -->
                 <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new area" title="Add new area" />
-                <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
+                <a t-att-href="'/signage_admin/%s/new_area' % (signage.name)" title="Add area to project">
                   <span>New Area</span>
                 </a>
                 <!-- // ## CONTENT :: EDIT -->
@@ -128,7 +128,7 @@
             <li>
               <span t-field="signage.name" />
               Edit:
-              <a t-att-href="'/signage/%s/edit' % signage.name">
+              <a t-att-href="'/signage_admin/%s/edit' % signage.name">
                 <span t-field="signage.name" />
               </a>
               <ul t-foreach="signage.area_ids" t-as="area">
@@ -140,11 +140,11 @@
                     <t t-foreach="area.page_ids" t-as="page">
                       <li>
                         Look, edit:
-                        <a t-att-href="'/signage/%s/edit' % page.id">
+                        <a t-att-href="'/signage_admin/%s/edit' % page.id">
                           <span t-field="page.name" />
                         </a>
                         Delete:
-                        <a t-att-href="'/signage/%s/delete' % page.id">
+                        <a t-att-href="'/signage_admin/%s/delete' % page.id">
                           <span t-field="page.name" />
                         </a>
                         Offset
@@ -152,7 +152,7 @@
                       </li>
                     </t>
                     <li>
-                      <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)">
+                      <a t-att-href="'/signage_admin/%s/%s/new' % (signage.name, area.name)">
                         <span>New Page</span>
                       </a>
                     </li>
