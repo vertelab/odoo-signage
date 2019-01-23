@@ -1,0 +1,397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="signage.ongoing_work" name="Ongoing work">
+        <t t-call="signage.layout">
+            <style>
+                body {
+                    background-image: url('/signage_mro/static/src/img/bg.png');
+                }
+                .table-bordered, .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+                    border: 2px solid #444D5B;
+                }
+            </style>
+            <div id="wrap">
+                <div class="oe_structure oe_empty" style="padding: 0px 40px;">
+                 <t t-set="allmros" t-value="request.env['mro.order'].get_all_mro()"/>
+                  <t t-set="stations" t-value="request.env['mro.order'].get_mro_by_station(page.limit, page.offset).get('stations')"/>
+                    <t t-if="len(allmros) &lt; 15">
+                    <table class="table table-striped table-bordered text-center" style="background-color: #fff;">
+                        <thead>
+                            <tr style="background-color: #005084; color: #fff;">
+                                <th class="text-center" style="vertical-align: middle; width: 13%;"><h3>Station</h3></th>
+                                <th class="text-center" style="vertical-align: middle; width: 40%;"><h3>Activity</h3></th>
+                                <th class="text-center" style="vertical-align: middle; width: 12%;"><h3>Technician</h3></th>
+                                <th class="text-center" style="vertical-align: middle; width: 12%;"><h3>Vehicle</h3></th>
+                                <th class="text-center" style="vertical-align: middle; width: 6%;"><h3>Order</h3></th>
+                                <th class="text-center" style="vertical-align: middle; width: 6%;"><h3>Date</h3></th>
+                                <th class="text-center" style="vertical-align: middle; width: 12%;"><h3>Requester</h3></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="len(stations) &gt; 0">
+                                <t t-foreach="stations" t-as="s">
+                                    <t t-set="mros" t-value="request.env['mro.order'].get_station_mro(s)"/>
+                                    <t t-if="len(mros) &gt; 0">
+                                        <tr>
+                                            <td style="vertical-align: middle;">
+                                                <b><h3 t-esc="s.name"/></b>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.labor_motivation and m.mechanician_id">
+                                                        <h3 t-esc="m.description +', '+ m.labor_motivation" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                           <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.mechanician_id">
+                                                        <h3 t-esc="m.formatted_name(m.mechanician_id.name)"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.asset_id and m.mechanician_id">
+                                                        <h3 t-esc="m.asset_id.asset_number"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.name and m.mechanician_id">
+                                                        <h3 t-esc="(m.name[3:]).lstrip('0')"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.mechanician_id">
+                                                        <h3 t-esc="m.get_etd(m.date_scheduled, m.order_duration)"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.create_uid and m.mechanician_id">
+                                                        <h3 t-esc="m.create_uid.name"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                  </t>
+                   <t t-if="len(allmros) &gt; 15">
+                    <table class="table table-striped table-bordered text-center" style="background-color: #fff;">
+                        <thead>
+                            <tr style="background-color: #005084; color: #fff;">
+                                <th class="text-center" style="vertical-align: middle; width: 7%;"><h5>Station</h5></th>
+                                <th class="text-center" style="vertical-align: middle; width: 45%;"><h5>Activity</h5></th>
+                                <th class="text-center" style="vertical-align: middle; width: 12%;"><h5>Technician</h5></th>
+                                <th class="text-center" style="vertical-align: middle; width: 12%;"><h5>Vehicle</h5></th>
+                                <th class="text-center" style="vertical-align: middle; width: 6%;"><h5>Order</h5></th>
+                                <th class="text-center" style="vertical-align: middle; width: 6%;"><h5>Date</h5></th>
+                                <th class="text-center" style="vertical-align: middle; width: 12%;"><h5>Requester</h5></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="len(stations) &gt; 0">
+                                <t t-foreach="stations" t-as="s">
+                                    <t t-set="mros" t-value="request.env['mro.order'].get_station_mro(s)"/>
+                                    <t t-if="len(mros) &gt; 0">
+                                        <tr>
+                                            <td style="vertical-align: middle;">
+                                                <b><h5 t-esc="s.name"/></b>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.labor_motivation and m.mechanician_id">
+                                                        <h5 t-esc="m.description +', '+ m.labor_motivation" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                           <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.mechanician_id">
+                                                        <h5 t-esc="m.formatted_name(m.mechanician_id.name)"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.asset_id and m.mechanician_id">
+                                                        <h5 t-esc="m.asset_id.asset_number"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.name and m.mechanician_id">
+                                                        <h5 t-esc="(m.name[3:]).lstrip('0')"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.mechanician_id">
+                                                        <h5 t-esc="m.get_etd(m.date_scheduled, m.order_duration)"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <t t-foreach="mros" t-as="m">
+                                                    <t t-if="m.create_uid and m.mechanician_id">
+                                                        <h5 t-esc="m.create_uid.name"/>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                  </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="signage.week_planning" name="Calendar week planning">
+        <t t-call="signage.layout">
+            <style>
+                body {
+                    background-image: url('/signage_mro/static/src/img/bg.png');
+                }
+                .table-bordered, .table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+                    border: 2px solid #444D5B;
+                }
+            </style>
+            <div id="wrap">
+                <div class="oe_structure oe_empty" style="padding: 0px 40px;">
+                    <h1 style="color: #434C5A;"><b>Weekly planning</b></h1>
+                    <t t-set="mechanicians" t-value="request.env['mro.order'].get_mechanician(page.limit, page.offset).get('mechanicians')"/>
+                    <table class="table table-striped table-bordered text-center" style="background-color: #fff;">
+                        <thead>
+                            <tr style="background-color: #005084; color: #fff;">
+                                <th class="text-center" style="width: 15%;"><h1><b>Technician</b></h1></th>
+                                <th class="text-center" style="width: 17%;"><h1><b>Monday</b></h1></th>
+                                <th class="text-center" style="width: 17%;"><h1><b>Tuesday</b></h1></th>
+                                <th class="text-center" style="width: 17%;"><h1><b>Wednesday</b></h1></th>
+                                <th class="text-center" style="width: 17%;"><h1><b>Thursday</b></h1></th>
+                                <th class="text-center" style="width: 17%;"><h1><b>Friday</b></h1></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="len(mechanicians) &gt; 0">
+                                <t t-foreach="mechanicians" t-as="m">
+                                    <tr>
+                                        <td style="padding: 5px; vertical-align: middle;">
+                                            <h1><t t-esc="m.name"/></h1>
+                                        </td>
+                                        <t t-set="days" t-value="request.env['mro.order'].get_weekdays()"/>
+                                        <t t-foreach="range(5)" t-as="i">
+                                            <t t-set="day" t-value="request.env['mro.order'].get_wd(days, i)"/>
+                                            <td>
+                                                <t t-foreach="day" t-as="d">
+                                                    <t t-set="mros" t-value="request.env['mro.order'].get_mechanician_mro(m, d)"/>
+                                                    <t t-if="len(mros) &gt; 0">
+                                                        <t t-foreach="mros" t-as="mro">
+                                                            <t t-if="mro.mechanician_id">
+                                                                <h2 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                                    <t t-esc="mro.labor_motivation"/>
+                                                                </h2>
+                                                            </t>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="signage.ongoing_work_old" name="Today's ongoing work (old)">
+        <t t-call="signage.layout">
+            <style>
+                <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+            </style>
+
+            <style>
+                body {
+                    background-color: #9AE5F8;
+                    color: #4B5B69;
+                }
+                main {
+                    font-family: 'PT Sans Narrow', sans-serif !important;
+                    height: 100%;
+                }
+            </style>
+            <div id="wrap">
+                <div class="oe_structure oe_empty">
+                    <t t-set="orders" t-value="request.env['mro.order'].get_mro_by_station(page.limit, page.offset)"/>
+                    <t t-set="total_orders" t-value="request.env['mro.order'].get_mro_by_station(999, 0)"/>
+                    <h3 style="margin-top: 15px; text-align: center;">
+                        <b>Today's ongoing work</b>
+                        <b style="float: right; padding-right: 15px; color: #005084;">
+                            <t t-esc="page.current_page()"/>/<t t-esc="page.total_pages(total_orders)"/>
+                            <p style="display: none;" t-esc="page.offset_calc(total_orders)"/>
+                        </b>
+                    </h3>
+                    <div style="width: 100%; padding: 15px;">
+                        <table style="width: 100%; table-layout: fixed; font-size: 18px;">
+                            <tr style="border-bottom: 1px solid #00ace2;">
+                                <th style="width: 10%;">Station</th>
+                                <th>Worktask</th>
+                                <th style="width: 10%;">Delivery</th>
+                                <th style="width: 14%;">Mechanic</th>
+                                <th style="width: 14%;">Requester</th>
+                            </tr>
+                            <t t-if="len(orders) &gt; 0">
+                                <t t-set="station" t-value="None"/>
+                                <t t-foreach="orders" t-as="order">
+                                    <tr t-if="order.workstation != station">
+                                        <td>
+                                            <b><t t-esc="order.workstation.name"/></b>
+                                        </td>
+                                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0px 5px;">
+                                            <t t-if="order.labor_motivation">
+                                                <t t-esc="order.labor_motivation"/>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-esc="order.get_etd(order.date_scheduled, order.order_duration)"/>
+                                        </td>
+                                        <td>
+                                            <t t-if="order.mechanician_id">
+                                                <t t-esc="order.formatted_name(order.mechanician_id.name)"/>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-if="order.asset_id.user_id">
+                                                <t t-esc="order.formatted_name(order.asset_id.user_id.name)"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="order.workstation == station">
+                                        <td/>
+                                        <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0px 5px;">
+                                            <t t-if="order.labor_motivation">
+                                                <span style="margin-bottom: 0px; font-size: 14px; font-style: italic; overflow: hidden; text-overflow: ellipsis; display: list-item; list-style-type: disc; list-style-position: inside;">
+                                                    <t t-esc="order.labor_motivation"/>
+                                                </span>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <ul style="padding-left: 15px; margin-bottom: 0px; font-size: 14px; font-style: italic;">
+                                                <li><t t-esc="order.get_etd(order.date_scheduled, order.order_duration)"/></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <t t-if="order.mechanician_id">
+                                                <ul style="padding-left: 15px; margin-bottom: 0px; font-size: 14px; font-style: italic;">
+                                                    <li><t t-esc="order.formatted_name(order.mechanician_id.name)"/></li>
+                                                </ul>
+                                            </t>
+                                        </td>
+                                        <td>
+                                            <t t-if="order.asset_id.user_id">
+                                                <ul style="padding-left: 15px; margin-bottom: 0px; font-size: 14px; font-style: italic;">
+                                                    <li><t t-esc="order.formatted_name(order.asset_id.user_id.name)"/></li>
+                                                </ul>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <t t-set="station" t-value="order.workstation"/>
+                                </t>
+                            </t>
+                            <t t-if="len(orders) == 0">
+                                <h1 id="this_is_an_empty_page" style="text-align: center;">Sorry! Nothing to show</h1>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="signage.week_planning_old" name="Calendar week planning (old)">
+        <t t-call="signage.layout">
+            <style>
+                <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+            </style>
+            <style>
+                body {
+                    background-color: #005084;
+                    color: #fff;
+                }
+                main {
+                    font-family: 'PT Sans Narrow', sans-serif !important;
+                    height: 100%;
+                }
+            </style>
+            <div id="wrap">
+                <div class="oe_structure oe_empty">
+                    <t t-set="mechanicians" t-value="request.env['mro.order'].get_mechanician(page.limit, page.offset).get('mechanicians')"/>
+                    <t t-set="total_mechanicians" t-value="request.env['mro.order'].get_mechanician(999, 0).get('mechanicians')"/>
+                    <h3 style="margin-top: 15px; text-align: center;">
+                        <b>Calendar week planning</b>
+                        <b style="float: right; padding-right: 15px;">
+                            <t t-esc="page.current_page()"/>/<t t-esc="page.total_pages(total_mechanicians)"/>
+                            <p style="display: none;" t-esc="page.offset_calc(total_mechanicians)"/>
+                        </b>
+                    </h3>
+                    <div style="width: 100%; padding: 15px;">
+                        <table style="width: 100%; font-size: 18px; table-layout: fixed;">
+                            <tr style="border-bottom: 1px solid #00ace2;">
+                                <th style="width: 15%;">Name</th>
+                                <th style="width: 17%; text-align: center;">Mon</th>
+                                <th style="width: 17%; text-align: center;">Tue</th>
+                                <th style="width: 17%; text-align: center;">Wed</th>
+                                <th style="width: 17%; text-align: center;">Thu</th>
+                                <th style="width: 17%; text-align: center;">Fri</th>
+                            </tr>
+                            <t t-if="len(mechanicians) &gt; 0">
+                                <t t-foreach="mechanicians" t-as="m">
+                                    <tr style="border-bottom: 1px solid #00ace2;">
+                                        <td style="padding: 5px;">
+                                            <b><t t-esc="m.name.split(' ')[0]"/></b>
+                                        </td>
+                                        <t t-foreach="request.env['mro.order'].get_weekdays()" t-as="d">
+                                            <td style="padding: 5px; position: relative; font-size: 14px; vertical-align: top;">
+                                                <t t-set="mros" t-value="request.env['mro.order'].get_mechanician_mro(m, d)"/>
+                                                <t t-if="len(mros) &gt; 0">
+                                                    <t t-foreach="mros" t-as="mro">
+                                                        <p t-if="mro_index != len(mros)-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0px;">
+                                                            <t t-esc="mro.labor_motivation"/>
+                                                        </p>
+                                                        <p t-if="mro_index == len(mros)-1" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0px 0px 20px 0px;">
+                                                            <t t-esc="mro.labor_motivation"/>
+                                                        </p>
+                                                    </t>
+                                                    <b style="position: absolute; bottom: 5px;"><t t-esc="request.env['mro.order'].get_mechanician_efficiency(m, d)"/>%</b>
+                                                </t>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

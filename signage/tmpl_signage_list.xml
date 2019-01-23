@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- ## EDIT SHOWCASE-->
+  <template id="signage_list" name="Signage List">
+    <title>Edit your showcase</title>
+    <t t-call="website.layout">
+      <div class="row">
+        <div class="col-sm-4" />
+        <div class="col-sm-4">
+          <h2>Signage</h2>
+          <!-- 
+               <t t-raw="signages" />
+               <img src="/signage/static/src/img/documentation.gif" />
+          -->
+          <!-- ##  FOR EACH-LOOP -->
+          <ul t-foreach="signages" t-as="signage">
+            <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="card-header" t-att-id="'heading%s' % signage.id">
+                  <h5 class="mb-0">
+                    <span class="fa fa-folder fa-2x" style="margin: 0 auto;" data-original-title="Open / edit project" t-att-title="'Open / edit project, %s' % signage.name" />
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" t-att-data-target="'#collapse%s' % signage.id" aria-expanded="false" aria-controls="collapse" title="Add / edit / view">
+                      <span t-field="signage.name" />
+                    </button>
+                  </h5>
+                </div>
+                <!-- ## CONTENT :: EDIT -->
+                <!--  Angelica - Faithfully (Eurotrance Remix) -->
+                <div t-att-id="'collapse%s' % signage.id" class="collapse" t-att-aria-labelledby="'heading%s' % signage.id" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <ul t-foreach="signage.area_ids" t-as="area">
+                      <li>
+                        <span class="fa fa-file-o fa-2x" style="margin: 0 auto;" data-original-title="Open to view or to edit" t-att-title="'Open to view or to edit, %s' % signage.name" />
+                        <span t-field="area.name" />
+                        Limit
+                        <span t-field="area.limit" />
+                        <ul>
+                          <t t-foreach="area.page_ids" t-as="page">
+                            <li>
+                              <!-- ## LOOK -->
+                              <span class="fa fa-file-code-o fa-2x" style="margin: 0 auto;" data-original-title="Get content for project" t-att-title="'Get content for project %s' % signage.id" />
+                              Look, edit:
+
+                              <a t-att-href="'/signage/%s/edit' % page.id" target="_blank" title="View and/or edit page.">
+                                <span t-field="page.name" />
+                              </a>
+                              <br />
+                              <!-- ## DELETE -->
+                              <!--  
+                                   <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undo!" t-att-title="'Delete %. Ca NOT undo! %s' % page.name" />
+                              -->
+                              <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undu!" title="Delete. Can NOT undu!" />
+                              <a t-att-href="'/signage/%s/delete' % page.id">
+                                <span t-field="page.name" />
+                              </a>
+                              Offset
+                              <span t-field="page.offset" />
+                            </li>
+                          </t>
+                          <li>
+                            <!-- ## ADD PAGE-->
+                            <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new page" title="Add new page" />
+                            <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
+                              <span>New Page</span>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <!-- // ADD NEW  -->
+                  </div>
+                </div>
+                <!-- ## ADD AREA -->
+                <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new area" title="Add new area" />
+                <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
+                  <span>New Area</span>
+                </a>
+                <!-- // ## CONTENT :: EDIT -->
+              </div>
+            </div>
+          </ul>
+        </div>
+        <div class="col-sm-4" />
+      </div>
+    </t>
+  </template>
+  <template id="signage_default_layout_4" name="Signage Default Layout 2x2">
+    <t t-call="signage.layout">
+      <style>
+        <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+      </style>
+      <style>
+        body {
+        font-family: 'PT Sans Narrow', sans-serif;
+        }
+      </style>
+      <div style="height: 100%; background-color: #94A8B2;">
+        <section style="height: 100%; background-color: #94A8B2;">
+          <div class="container" style="width: 100%; height: 100%; padding: 0px;">
+            <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.4% 0.4% 0.2% 0.4%;">
+              <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #DEE6ED; position: relative; float: left;">
+                <t t-call="quarter1" />
+              </div>
+              <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #9AE5F8; position: relative; float: left;">
+                <t t-call="quarter2" />
+              </div>
+            </div>
+            <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.2% 0.4% 0.4% 0.4%;">
+              <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #434C5A; position: relative; float: left; color: #434C5A;">
+                <t t-call="quarter3" />
+              </div>
+              <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #005084; position: relative; float: left; color: #fff;">
+                <t t-call="quarter4" />
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </t>
+  </template>
+  <template id="signage_listxx" name="Signage List">
+    <t t-call="website.layout">
+      <div id="wrap" class="container">
+        <div class="oe_structure oe_empty" />
+        <div class="row col-md-offset-2">
+          <h1>Signage</h1>
+          <ul t-foreach="signages" t-as="signage">
+            <li>
+              <span t-field="signage.name" />
+              Edit:
+              <a t-att-href="'/signage/%s/edit' % signage.name">
+                <span t-field="signage.name" />
+              </a>
+              <ul t-foreach="signage.area_ids" t-as="area">
+                <li>
+                  <span t-field="area.name" />
+                  Limit
+                  <span t-field="area.limit" />
+                  <ul>
+                    <t t-foreach="area.page_ids" t-as="page">
+                      <li>
+                        Look, edit:
+                        <a t-att-href="'/signage/%s/edit' % page.id">
+                          <span t-field="page.name" />
+                        </a>
+                        Delete:
+                        <a t-att-href="'/signage/%s/delete' % page.id">
+                          <span t-field="page.name" />
+                        </a>
+                        Offset
+                        <span t-field="page.offset" />
+                      </li>
+                    </t>
+                    <li>
+                      <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)">
+                        <span>New Page</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </t>
+  </template>
+</odoo>
