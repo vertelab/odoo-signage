@@ -197,6 +197,26 @@ class WebsiteSignage(http.Controller):
              })
             return werkzeug.utils.redirect('/signage/%s/edit' %new_page.id)
 
+    @http.route(['/signage/<string:signage>/new_area'],type='http', auth='user', website=True)
+    def signage_area_insert(self, signage, **post):
+        signage = request.env['signage.signage'].search([('name','=',signage)])
+        if signage :
+            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
+            # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
+            area_name = '%s-%s' % (signage.name, area.name)
+            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
+            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
+            new_page = request.env['signage.area.page'].create({
+                'area_id': area.id,
+                'name': '%s_page_%s' % (area.name, area.nbr_pages + 1),
+                'template_id': template.id,
+             })
+            return werkzeug.utils.redirect('/signage/%s/edit_area' %new_area.id)
+
+    # ~ @http.route(['/signage/<string:signage>/<string:area>/editSubmenu'],type='http', auth='user', website=True)
+    # ~ def signage_area_edit_submenu(self, signage, **post):
+
+
     @http.route(['/signage/demo'], type='http', auth='public', website=True)
     def signage_demo(self):
         return request.render('signage.signage_demo', {})

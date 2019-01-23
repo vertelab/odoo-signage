@@ -1,0 +1,43 @@
+Xvfb :10 -ac &
+export DISPLAY=:10
+python
+# CODE FOR TERMINAL
+from bokeh.io import show, output_file
+from bokeh.models import ColumnDataSource
+from bokeh.palettes import Spectral6
+from bokeh.plotting import figure
+from bokeh.transform import factor_cmap
+from bokeh.io import export_svgs
+from bokeh.io.export import get_svgs
+from bokeh.io.export import get_png
+from bokeh.io.export import webdriver_control
+from bokeh.io import export_png
+from tempfile import NamedTemporaryFile
+#https://medium.com/@griggheo/running-selenium-webdriver-tests-using-firefox-headless-mode-on-ubuntu-d32500bb6af2
+# sudo apt install firefoxdriver
+# https://github.com/mozilla/geckodriver/releases
+# Download latest, put in /user/bin
+#from selenium.webdriver.firefox.webdriver import WebDriver
+output_file("bar_colormapped.html")
+fruits = ['Apples', 'Pears', 'Nectarines', 'Plums', 'Grapes', 'Strawberries']
+counts = [5, 3, 4, 2, 4, 6]
+source = ColumnDataSource(data=dict(fruits=fruits, counts=counts))
+p = figure(x_range=fruits, plot_height=350, toolbar_location=None, title="Fruit Counts")
+p.vbar(x='fruits', top='counts', width=0.9, source=source, legend="fruits",
+       line_color='white', fill_color=factor_cmap('fruits', palette=Spectral6, factors=fruits))
+p.xgrid.grid_line_color = None
+p.y_range.start = 0
+p.y_range.end = 9
+p.legend.orientation = "horizontal"
+p.legend.location = "top_center"
+#show(p)
+#p.output_backend = "svg"
+#export_svgs(p, filename="plot.svg")
+#t = NamedTemporaryFile(suffix=".svg")
+#export_svgs(p, filename=t.name, webdriver=WebDriver())
+#t.write(p)
+#t.seek(0)
+#print(t.read())
+#t.close()
+png = get_png(p, webdriver=webdriver_control.create())
+print(png)
