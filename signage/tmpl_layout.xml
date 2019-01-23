@@ -2,8 +2,8 @@
 <openerp>
 <data>
   <template id="layout">
-    <!-- ## USE hide_header=TRUE WHEN PAGE IS 
-         INCLUDED IN A ROTARY TRAY AND HEADER/FOOTER 
+    <!-- ## USE hide_header=TRUE WHEN PAGE IS
+         INCLUDED IN A ROTARY TRAY AND HEADER/FOOTER
          SHALL NOT BE EXECUTED FOR EVERY SINGEL PAGE -->
     <t t-if="hide_header">
       <main>
@@ -50,45 +50,36 @@
       </t>
       <t t-set="x_icon" t-value="'/web/image/website/%s/favicon/' % website.id" />
       <t t-set="head_website">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" t-att-content="main_object and 'website_meta_description' in main_object
-                    and main_object.website_meta_description or website_meta_description" />
-        <meta name="keywords" t-att-content="main_object and 'website_meta_keywords' in main_object
-                    and main_object.website_meta_keywords or website_meta_keywords" />
-        <meta name="generator" content="Odoo" />
-        <!-- OpenGraph tags for Facebook sharing -->
-        <meta property="og:title" t-att-content="additional_title" />
-        <meta property="og:site_name" t-att-content="res_company.name" />
-        <t t-if="main_object and 'plain_content' in main_object and main_object.plain_content">
-          <t t-set="og_description" t-value="main_object.plain_content[0:500]" />
-          <meta property="og:description" t-att-content="og_description" />
-          <meta property="og:image" t-att-content="request.httprequest.url_root+'logo.png'" />
-          <meta property="og:url" t-att-content="request.httprequest.url_root+request.httprequest.path[1:end]" />
-        </t>
-        <t t-set="languages" t-value="website.get_languages() if website else None" />
-        <t t-if="request and request.website_multilang and website">
-          <t t-foreach="website.get_alternate_languages(request.httprequest)" t-as="lg">
-            <link rel="alternate" t-att-hreflang="lg['hreflang']" t-att-href="lg['href']" />
-          </t>
-        </t>
-        <script type="text/javascript">
-          odoo.session_info = {
-          is_superuser:
-          <t t-esc="json.dumps(request.env.user._is_superuser())" />
-          ,
-          is_frontend: true,
-          };
-        </script>
-        <t t-call-assets="web.assets_common" t-js="false" />
-        <t t-call-assets="web.assets_frontend" t-js="false" />
-        <t t-call-assets="web_editor.summernote" t-js="false" groups="website.group_website_publisher" />
-        <t t-call-assets="web_editor.assets_editor" t-js="false" groups="website.group_website_publisher" />
-        <t t-call-assets="website.assets_editor" t-js="false" groups="website.group_website_publisher" />
-        <t t-call-assets="web.assets_common" t-css="false" />
-        <t t-call-assets="web.assets_frontend" t-css="false" />
-        <t t-call-assets="web_editor.summernote" t-css="false" groups="website.group_website_publisher" />
-        <t t-call-assets="web_editor.assets_editor" t-css="false" groups="website.group_website_publisher" />
-        <t t-call-assets="website.assets_editor" t-css="false" groups="website.group_website_publisher" />
+        <meta charset="utf-8" />
+            <t t-if="main_object and 'website_meta_title' in main_object and not title">
+                <t t-set="title" t-value="main_object.website_meta_title"/>
+            </t>
+            <t t-if="main_object and 'name' in main_object and not title and not additional_title">
+                <t t-set="additional_title" t-value="main_object.name"/>
+            </t>
+            <t t-if="not title">
+                <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t><t t-esc="(website or res_company).name"/></t>
+            </t>
+
+            <meta name="viewport" content="initial-scale=1"/>
+            <meta name="description" t-att-content="main_object and 'website_meta_description' in main_object
+                and main_object.website_meta_description or website_meta_description"/>
+            <meta name="keywords" t-att-content="main_object and 'website_meta_keywords' in main_object
+                and main_object.website_meta_keywords or website_meta_keywords"/>
+            <meta name="generator" content="Odoo"/>
+            <title><t t-esc="title"/></title>
+
+            <t t-set="languages" t-value="website.get_languages() if website else None"/>
+            <t t-if="request and request.website_multilang and website">
+                <t t-foreach="website.get_alternate_languages(request.httprequest)" t-as="lg">
+                    <link rel="alternate" t-att-hreflang="lg['hreflang']" t-att-href="lg['href']"/>
+                </t>
+            </t>
+
+            <t t-call-assets="web.assets_common" t-js="false"/>
+            <t t-call-assets="website.assets_frontend" t-js="false"/>
+
+            <t t-raw="head or ''" name="layout_head"/>
       </t>
       <t t-set="head" t-value="head_website + (head or '')" />
       <t t-if="edit">
@@ -252,7 +243,7 @@
         (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        
+
         ga('create', _.str.trim('
         <t t-esc="website.google_analytics_key" />
         '), 'auto');

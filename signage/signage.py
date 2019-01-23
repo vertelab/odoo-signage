@@ -162,7 +162,7 @@ class WebsiteSignage(http.Controller):
             if signage.token and post.get('token') and signage.token == post.get('token'):
                 area = request.env['signage.area'].sudo().search([('name', '=', area), ('signage_id', '=', signage.id)])
                 if area:
-                    return request.render(area.get_next_page().template_id.key, {'signage': signage, 'area': area, 'page': area.last_page})
+                    return request.render(area.get_next_page().template_id.xml_id, {'signage': signage, 'area': area, 'page': area.last_page})
             else:
                 return request.render('website.403', {})
         return False
@@ -175,15 +175,17 @@ class WebsiteSignage(http.Controller):
                 area_list = []
                 for area in signage.area_ids.sorted(lambda a: a.name):
                     res = area.get_next_page().template_id.render({'signage': signage, 'area': area, 'page': area.last_page, 'hide_header': True})
+                    # ~ res = area.get_next_page().template_id.arch
                     area_list.append(res)
-                return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
+                    _logger.warn(res)
+                return request.render(signage.template_id.xml_id, {'signage': signage, 'area_list': area_list})
             else:
                 return request.render('website.403', {})
         return False
 
     @http.route(['/signage/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
     def signage_edit_page(self, page, **post): #return a specified page and activate edit mode
-        return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True})
+        return request.render(page.template_id.xml_id, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True})
 
     @http.route(['/signage/<string:signage>/<string:area>/new'],type='http', auth='user', website=True)
     def signage_page_edit(self, signage, area=None,page=None, **post):
