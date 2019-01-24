@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="signage_demo" name="Demo Page for Signage">
+            <t t-call="website.layout">
+                <style>
+                    <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+                </style>
+                <style>
+                    body {
+                    font-family: 'PT Sans Narrow', sans-serif;
+                    }
+                </style>
+                <div style="height: 100%; background-color: #94A8B2;">
+                    <section style="height: 100%; background-color: #94A8B2;">
+                        <div class="container" style="width: 100%; height: 100%; padding: 0px;">
+                            <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.4% 0.4% 0.2% 0.4%;">
+                                <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #DEE6ED; position: relative; float: left;">
+                                    <h3 style="margin-top: 15px; text-align: center; color: #005084;">
+                                        <b>Säve workshop information guide</b>
+                                    </h3>
+                                    <hr style="margin-top: 10px; margin-bottom: 0px; width: 90%; border-color: #00ACE2;" />
+                                    <div style="width: 100%; height: 85%; padding: 15px 30px 15px 30px;">
+                                        <div style="width: 100%; height: 30%">
+                                            <div style="width: 50%; height: 100%; padding: 0% 1% 1% 0%; float: left;">
+                                                <span style="font-size: 18px; color: #00ACE2;">
+                                                    <b>TODAY'S WORKSHOP HOST:</b>
+                                                </span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">
+                                                    <b>Olle Olsson  Mobile: 071-123456</b>
+                                                </span>
+                                                <br />
+                                                <span style="font-size: 15px; color: #005084;">Contact the host if you have any need of tools or moving cars...</span>
+                                            </div>
+                                            <div style="width: 50%; height: 100%; padding: 0% 0% 1% 1%; float: right;">
+                                                <span style="font-size: 18px; color: #00ACE2;">
+                                                    <b>TODAY'S VISIT:</b>
+                                                </span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">
+                                                    <b>Namn Namnsson Företag AB</b>
+                                                </span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">
+                                                    <b>Namn Namnsson Företag AB</b>
+                                                </span>
+                                                <br />
+                                            </div>
+                                        </div>
+                                        <div style="width: 100%; height: 70%">
+                                            <div style="width: 50%; height: 100%; padding: 1% 1% 0% 0%; float: left;">
+                                                <span style="font-size: 18px; color: #00ACE2;">
+                                                    <b>CONTACTS:</b>
+                                                </span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">Jan Johansson - 072-1843788</span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084; font-style: italic;">Workshop Team Leader</span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">Magnus Falk - 072-1843900</span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084; font-style: italic;">Workshop Coordinatior</span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">Melanie D'Avila - 072-1843781</span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084; font-style: italic;">Säve Reception</span>
+                                                <br />
+                                            </div>
+                                            <div style="width: 50%; height: 100%; padding: 1% 0% 0% 1%; float: right;">
+                                                <span style="font-size: 18px; color: #00ACE2;">
+                                                    <b>SPECIAL EVENTS:</b>
+                                                </span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">- Today we will have a lot of driving outside, please be careful in the area.</span>
+                                                <br />
+                                                <span style="font-size: 18px; color: #005084;">- Rebuild of alarmsystem will take place with some "noise" during the day.</span>
+                                                <br />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #9AE5F8; position: relative; float: left; color: #434C5A;">
+                                    <h3 style="margin-top: 15px; text-align: center;">
+                                        <b>Today's ongoing work</b>
+                                        <b style="float: right; padding-right: 15px; color: #005084;">1/2</b>
+                                    </h3>
+                                    <div style="width: 100%; padding: 15px;">
+                                        <table style="width: 100%; font-size: 18px;">
+                                            <tr style="border-bottom: 1px solid #00ace2;">
+                                                <th>Station</th>
+                                                <th>Worktask</th>
+                                                <th>Delivery</th>
+                                                <th>Mechanic</th>
+                                                <th>Requester</th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Stn1</b>
+                                                </td>
+                                                <td>Delivery Service H54</td>
+                                                <td>15,00</td>
+                                                <td>Robert U</td>
+                                                <td>Joakim J</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Stn2</b>
+                                                </td>
+                                                <td>Change alternator</td>
+                                                <td>21/8</td>
+                                                <td>Henrik K</td>
+                                                <td>Roger M</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Stn3</b>
+                                                </td>
+                                                <td>Engine mounts exchange</td>
+                                                <td>28/8</td>
+                                                <td>Jörgen V</td>
+                                                <td>Jesper M</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Stn4</b>
+                                                </td>
+                                                <td>Prep av bilar för Lync&amp;Co</td>
+                                                <td>25/8</td>
+                                                <td>Marin L</td>
+                                                <td>Viktor K</td>
+                                            </tr>
+                                            <tr>
+                                                <td />
+                                                <td>
+                                                    <ul style="font-size: 15px; font-style: italic;">
+                                                        <li>Leveransservice CX</li>
+                                                        <li>Demot avgasrör</li>
+                                                        <li>Rutbyte S204</li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul style="font-size: 15px; font-style: italic;">
+                                                        <li>26/8</li>
+                                                        <li>26/8</li>
+                                                        <li>3/9</li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul style="font-size: 15px; font-style: italic;">
+                                                        <li>Jörgen V</li>
+                                                        <li>Henrik K</li>
+                                                        <li>Robert U</li>
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul style="font-size: 15px; font-style: italic;">
+                                                        <li>Joakim J</li>
+                                                        <li>Roger M</li>
+                                                        <li>Jesper M</li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Stn5</b>
+                                                </td>
+                                                <td>Leveransservice CX</td>
+                                                <td>22/8</td>
+                                                <td>Patrik D</td>
+                                                <td>Joakim J</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width: 100%; height: 49.8%; padding: 0px; padding: 0.2% 0.4% 0.4% 0.4%;">
+                                <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-right: 0.2%; background-color: #434C5A; position: relative; float: left;">
+                                    <div style="width: 66.67%; float: left;">
+                                        <hr style="margin-top: 7%; width: 90%; border-color: #00ACE2;" />
+                                        <h3 style="margin-left: 1em; width: 70%; color: #00ACE2;">
+                                            <b>2. Rule - Clothing</b>
+                                        </h3>
+                                        <ul style="width: 70%">
+                                            <li style="color: #fff;">
+                                                <h3>
+                                                    <b>Use appropriate safety clothes, if you need to borrow some - speach to the workshop host.</b>
+                                                </h3>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div style="width: 33.33%; height: 100%; background-image: url('/website/static/src/img/library/mobile.jpg'); background-repeat: no-repeat; background-size: cover; background-position: right; padding: 0px; position: relative; float: right;">
+                                        <div style="height: 100%; width: 40px; position: absolute; top: 0px; left: 0px; overflow: hidden;">
+                                            <div style="width: 50px; height: 100%; border-top: 600px solid transparent; border-left: 40px solid #434C5A;" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width: 49.8%; height: 100%; background-color: #fff; padding: 0px; margin-left: 0.2%; background-color: #005084; position: relative; float: left; color: #fff;">
+                                    <h3 style="margin-top: 15px; text-align: center;">
+                                        <b>Calendar week planning</b>
+                                        <b style="float: right; padding-right: 15px;">1/2</b>
+                                    </h3>
+                                    <div style="width: 100%; padding: 15px;">
+                                        <table style="width: 100%; font-size: 18px;">
+                                            <tr style="border-bottom: 1px solid #00ace2;">
+                                                <th>Name</th>
+                                                <th>Mon</th>
+                                                <th>Tue</th>
+                                                <th>Wed</th>
+                                                <th>Thu</th>
+                                                <th>Fri</th>
+                                            </tr>
+                                            <tr style="border-bottom: 1px solid #00ace2;">
+                                                <td>
+                                                    <b>Henrik</b>
+                                                </td>
+                                                <td>
+                                                    Montera svetsat
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Montera svetsat
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Montera svetsat
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Montera svetsat
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Montera svetsat
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                            </tr>
+                                            <tr style="border-bottom: 1px solid #00ace2;">
+                                                <td>
+                                                    <b>Martin</b>
+                                                </td>
+                                                <td>
+                                                    Avrustning #98
+                                                    <br />
+                                                    <b>25%</b>
+                                                </td>
+                                                <td>
+                                                    Avrustning #98
+                                                    <br />
+                                                    <b>25%</b>
+                                                </td>
+                                                <td>
+                                                    Avrustning #98
+                                                    <br />
+                                                    <b>25%</b>
+                                                </td>
+                                                <td>
+                                                    Avrustning #98
+                                                    <br />
+                                                    <b>25%</b>
+                                                </td>
+                                                <td>
+                                                    Avrustning #98
+                                                    <br />
+                                                    <b>25%</b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <b>Robert</b>
+                                                </td>
+                                                <td>
+                                                    Bromsskrivsbyte
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Bromsskrivsbyte
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Bromsskrivsbyte
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Bromsskrivsbyte
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                                <td>
+                                                    Bromsskrivsbyte
+                                                    <br />
+                                                    <b>75%</b>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>

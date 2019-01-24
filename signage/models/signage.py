@@ -175,9 +175,7 @@ class WebsiteSignage(http.Controller):
                 area_list = []
                 for area in signage.area_ids.sorted(lambda a: a.name):
                     res = area.get_next_page().template_id.render({'signage': signage, 'area': area, 'page': area.last_page, 'hide_header': True})
-                    # ~ res = area.get_next_page().template_id.arch
                     area_list.append(res)
-                    _logger.warn(res)
                 return request.render(signage.template_id.xml_id, {'signage': signage, 'area_list': area_list})
             else:
                 return request.render('website.403', {})
