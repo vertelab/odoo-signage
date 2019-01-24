@@ -70,7 +70,9 @@
                 <t t-raw="0" />
             </t>
             <t t-if="not hide_header">
-                <t t-call="signage.layout_header_footer" />
+                <t t-call="signage.layout_header_footer">
+                    <t t-raw="0" />
+                </t>
             </t>
         </template>
         <!-- signage overview -->
