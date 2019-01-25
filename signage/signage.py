@@ -23,7 +23,7 @@ from odoo import http
 from odoo.http import request
 import hashlib
 import datetime
-import math
+# ~ import math
 import werkzeug
 from werkzeug.exceptions import NotFound
 
@@ -160,7 +160,7 @@ class WebsiteSignage(http.Controller):
             if signage.token and post.get('token') and signage.token == post.get('token'):
                 area = request.env['signage.area'].sudo().search([('name', '=', area), ('signage_id', '=', signage.id)])
                 if area:
-                    return request.render(area.get_next_page().template_id.key, {'signage': signage, 'area': area, 'page': area.last_page})
+                    return request.render(area.get_next_page().template_id.key, {'signage': signage,'area': area, 'page': area.last_page})
             else:
                 return request.render('website.403', {})
         return False
@@ -232,8 +232,16 @@ class WebsiteSignage(http.Controller):
     def signage_demo(self):
         return request.render('signage.signage_demo', {})
 
-    @http.route(['/signage/image/orders.svg'], type='http', auth='public', website=True)
-    def signage_square_5(self):
+    @http.route(['/signage/demo1'], type='http', auth='public', website=True)
+    def signage_demo1(self):
+        f = open('/usr/share/odoo-signage/signage/static/src/img/archive.gif')
+        gif = f.read()
+        f.close()
+        return http.send_file(StringIO(gif),mimetype='image/gif')
+
+
+    @http.route(['/signage/demo3'], type='http', auth='public', website=True)
+    def signage_demo1(self):
         fruits = ['Onsdag', 'Torsdag', 'Fredag', u'Måndag', 'Tisdag']
         counts = [55, 33, 44, 22, 44]
 
@@ -248,6 +256,43 @@ class WebsiteSignage(http.Controller):
         p.y_range.end = 70
         p.legend.orientation = "horizontal"
         p.legend.location = "top_center"
+
+        _logger.warn('<<<<<<<<<<<<<<<<<  p %s' % p)
+        
+        gif = p
+        vdisplay = Xvfb()
+        vdisplay.start()
+
+        # launch stuff inside
+        # virtual display here.
+        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
+        _logger.warn('<<<<<<<<<<<<<<<<<  png %s' % png.tobytes(encoder_name='raw'))
+        svg = get_svgs(p, webdriver=webdriver_control.create())    
+        _logger.warn('<<<<<<<<<<<<<<<<<  svg %s' % svg)
+
+        vdisplay.stop()
+        
+        
+        return http.send_file(StringIO(svg),mimetype='image/svg-xml')        
+
+    @http.route(['/signage_image/orders.svg'], type='http', auth='public', website=True)
+    def signage_image_orders(self):
+        fruits = ['Onsdag', 'Torsdag', 'Fredag', u'Måndag', 'Tisdag']
+        counts = [55, 33, 44, 22, 44]
+
+        source = ColumnDataSource(data=dict(fruits=fruits, counts=counts))
+
+        p = figure(x_range=fruits, plot_height=350, toolbar_location=None, title="Order statistik")
+        p.vbar(x='fruits', top='counts', width=0.9, source=source, legend="fruits",
+               line_color='white', fill_color=factor_cmap('fruits', palette=Spectral6, factors=fruits))
+
+        p.xgrid.grid_line_color = None
+        p.y_range.start = 0
+        p.y_range.end = 70
+        p.legend.orientation = "horizontal"
+        p.legend.location = "top_center"
+
+        _logger.warn('<<<<<<<<<<<<<<<<<  p %s' % p)
 
         #show(p)
         #p.output_backend = "svg"
@@ -265,6 +310,7 @@ class WebsiteSignage(http.Controller):
         # launch stuff inside
         # virtual display here.
         png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
+        _logger.warn('<<<<<<<<<<<<<<<<<  png %s' % png)
 
         vdisplay.stop()
 
@@ -274,7 +320,5 @@ class WebsiteSignage(http.Controller):
         # export_png(p, filename="plot.png")
         # p.output_backend = "svg"
         return http.send_file(StringIO(png),mimetype='image/png')
-
-
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
