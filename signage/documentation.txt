@@ -1,0 +1,45 @@
+Documentation -- Signage
+2019-01-25
+
+
+class signage_area
+    _name = 'signage.area'
+
+    name
+    signage_id
+    page_ids
+    last_page
+    limit
+    nbr_pages
+    page_nbr
+
+class signage_area_page
+    _name = 'signage.area.page'
+
+    name = fields.Char(string='Name')
+    area_id = fields.Many2one(comodel_name='signage.area',string='Area')
+    template_id = fields.Many2one(comodel_name='ir.ui.view', string='Template')
+    offset = fields.Integer(string='Offset')
+    limit = fields.Integer(string='Limit')
+
+
+Path convention
+
+/signage/admin/menu/id/new
+/signage/admin/menu/id/edit
+/signage/admin/menu/id/view
+/signage/admin/menu/id/delete
+
+/signage/admin/submenu/id/new
+/signage/admin/submenu/id/edit
+/signage/admin/submenu/id/view
+/signage/admin/submenu/id/delete
+
+/signage/admin/post/id/new
+/signage/admin/post/id/edit
+/signage/admin/post/id/view
+/signage/admin/post/id/delete
+
+/signage/view/menu/id/
+/signage/view/submenu/id/
+/signage/view/post/id/

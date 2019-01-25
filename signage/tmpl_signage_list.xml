@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <!-- ## EDIT SHOWCASE-->
+  <!-- ## JAKOB KRABBE 2019-01-24 -->
+  <!-- ## COMPATIBLE WITH ODOO 10 -->
+  <!-- ## EDIT SHOWCASE -->
   <template id="signage_list" name="Signage List">
     <title>Edit your showcase</title>
     <t t-call="website.layout">
@@ -22,10 +24,21 @@
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" t-att-data-target="'#collapse%s' % signage.id" aria-expanded="false" aria-controls="collapse" title="Add / edit / view">
                       <span t-field="signage.name" />
                     </button>
+                    <!-- ## VIEW WITH TOKEN -->
+                    Click to view, with token:
+                    <a t-att-href="'/signage/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
+                      <span t-field="signage.name" />
+                    </a>
+                    <select name="templateID">
+                      <option value="0">Choose template</option>
+                      <option value="2">Template 2 - 2 pages</option>
+                      <option value="3">Template 3 - 3 pages</option>
+                      <option value="4">Template 4 - 4 pages</option>
+                      <option value="5">Template 5 - 5 pages</option>
+                    </select>
                   </h5>
                 </div>
-                <!-- ## CONTENT :: EDIT -->
-                <!--  Angelica - Faithfully (Eurotrance Remix) -->
+                <!-- ## AREA / CONTENT :: EDIT -->
                 <div t-att-id="'collapse%s' % signage.id" class="collapse" t-att-aria-labelledby="'heading%s' % signage.id" data-parent="#accordionExample">
                   <div class="card-body">
                     <ul t-foreach="signage.area_ids" t-as="area">
@@ -38,19 +51,20 @@
                           <t t-foreach="area.page_ids" t-as="page">
                             <li>
                               <!-- ## LOOK -->
+                              <span>hello world!</span>
                               <span class="fa fa-file-code-o fa-2x" style="margin: 0 auto;" data-original-title="Get content for project" t-att-title="'Get content for project %s' % signage.id" />
                               Look, edit:
 
-                              <a t-att-href="'/signage_admin/%s/edit' % page.id" target="_blank" title="View and/or edit page.">
+                              <a t-att-href="'/signage/%s/edit' % page.id" target="_blank" title="View and/or edit page.">
                                 <span t-field="page.name" />
                               </a>
                               <br />
-                              <!-- ## DELETE -->
+                              <!-- ## DELETE PAGE -->
                               <!--  
                                    <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undo!" t-att-title="'Delete %. Ca NOT undo! %s' % page.name" />
                               -->
                               <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undu!" title="Delete. Can NOT undu!" />
-                              <a t-att-href="'/signage_admin/%s/delete' % page.id">
+                              <a t-att-href="'/signage/%s/delete' % page.id">
                                 <span t-field="page.name" />
                               </a>
                               Offset
@@ -59,10 +73,16 @@
                           </t>
                           <li>
                             <!-- ## ADD PAGE-->
-                            <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new page" title="Add new page" />
-                            <a t-att-href="'/signage_admin/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
-                              <span>New Page</span>
-                            </a>
+                            <!--
+                                 <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new page" title="Add new page" />
+                                 <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
+                                 <span>New Page</span>
+                                 </a>
+                            -->
+                            <form t-att-action="'/signage/%s/%s/new' % (signage.name, area.name)" method="post">
+                              <input type="text" width="8" name="title" />
+                              <input type="submit" value="Add Page" />
+                            </form>
                           </li>
                         </ul>
                       </li>
@@ -71,14 +91,26 @@
                   </div>
                 </div>
                 <!-- ## ADD AREA -->
-                <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new area" title="Add new area" />
-                <a t-att-href="'/signage_admin/%s/new_area' % (signage.name)" title="Add area to project">
-                  <span>New Area</span>
-                </a>
+                <!--
+                     <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new area" title="Add new area" />
+                     <a t-att-href="'/signage/%s/new_area' % (signage.name)" title="Add area to project">
+                     <span>New Area</span>
+                     </a>
+                -->
+                <form t-att-action="'/signage/%s/new_area' % (signage.name)" method="post">
+                  <input type="text" width="8" name="title" />
+                  <input type="submit" value="Add Area" />
+                </form>
                 <!-- // ## CONTENT :: EDIT -->
               </div>
             </div>
           </ul>
+          <!-- // ##  FOR EACH-LOOP -->
+          <!-- ## ADD SIGNAGE SHOWLIST -->
+          <form action="/signage/new_menu" method="post">
+            <input type="text" width="8" name="title" />
+            <input type="submit" value="Add Signage" />
+          </form>
         </div>
         <div class="col-sm-4" />
       </div>
@@ -128,7 +160,7 @@
             <li>
               <span t-field="signage.name" />
               Edit:
-              <a t-att-href="'/signage_admin/%s/edit' % signage.name">
+              <a t-att-href="'/signage/%s/edit' % signage.name">
                 <span t-field="signage.name" />
               </a>
               <ul t-foreach="signage.area_ids" t-as="area">
@@ -140,7 +172,7 @@
                     <t t-foreach="area.page_ids" t-as="page">
                       <li>
                         Look, edit:
-                        <a t-att-href="'/signage_admin/%s/edit' % page.id">
+                        <a t-att-href="'/signage/%s/edit' % page.id">
                           <span t-field="page.name" />
                         </a>
                         Delete:
@@ -152,7 +184,7 @@
                       </li>
                     </t>
                     <li>
-                      <a t-att-href="'/signage_admin/%s/%s/new' % (signage.name, area.name)">
+                      <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)">
                         <span>New Page</span>
                       </a>
                     </li>

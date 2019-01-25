@@ -52,6 +52,7 @@ class signage(models.Model):
     name = fields.Char(string='name')
     template_id = fields.Many2one(comodel_name='ir.ui.view')
     area_ids = fields.One2many(comodel_name='signage.area',inverse_name='signage_id')
+    default_areas = 
     state = fields.Selection([('draft','Draft'),('open','Open'),('closed','Closed')])
     description = fields.Text(string='Description')
     token = fields.Char(string="Token", help="Token calculates from Action 'Calculate Token'. Without token, this signage will be public.")
@@ -143,7 +144,7 @@ class signage_area_page(models.Model):
 
 
 class WebsiteSignage(http.Controller):
-
+    # 
     @http.route(['/signage','/signage/list'],type='http', auth='user', website=True)
     def signage_list(self, **post):
         return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')])})
@@ -163,7 +164,7 @@ class WebsiteSignage(http.Controller):
             else:
                 return request.render('website.403', {})
         return False
-
+    # DIRECT URL TO THE ROTATING PAGE
     @http.route(['/signage/<string:signage>/all'],type='http', auth='public', website=True)
     def signage_view_all(self, signage, **post): #return the last page from a specified area
         signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
@@ -178,11 +179,21 @@ class WebsiteSignage(http.Controller):
                 return request.render('website.403', {})
         return False
 
+    # ADD / EDIT
+    @http.route(['/signage/menu/<model("signage.signage"):signage>/edit'],type='http', auth='user', website=True)
+    def signage_edit_signage(self, signage, **post): #return a specified page and activate edit mode
+                area_list = []
+                for area in signage.area_ids.sorted(lambda a: a.name):
+                    area_list.append('<div>%s</div>' % area.name)
+        return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
+
+    # ADD / EDIT PAGE
     @http.route(['/signage/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
     def signage_edit_page(self, page, **post): #return a specified page and activate edit mode
         return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True})
 
-    @http.route(['/signage/<string:signage>/<string:area>/new'],type='http', auth='user', website=True)
+    # ADD / NEW PAGE IN AN AREA
+    @http.route(['/signage/<string:signage>/<string:area>/new_page'],type='http', auth='user', website=True)
     def signage_page_edit(self, signage, area=None,page=None, **post):
         signage = request.env['signage.signage'].search([('name','=',signage)])
         if signage and area:
@@ -196,7 +207,7 @@ class WebsiteSignage(http.Controller):
                 'template_id': template.id,
              })
             return werkzeug.utils.redirect('/signage/%s/edit' %new_page.id)
-
+    # ADD / NEW AREA
     @http.route(['/signage/<string:signage>/new_area'],type='http', auth='user', website=True)
     def signage_area_insert(self, signage, **post):
         signage = request.env['signage.signage'].search([('name','=',signage)])
