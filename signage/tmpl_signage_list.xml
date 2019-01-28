@@ -20,22 +20,28 @@
               <div class="card">
                 <div class="card-header" t-att-id="'heading%s' % signage.id">
                   <h5 class="mb-0">
-                    <span class="fa fa-folder fa-2x" style="margin: 0 auto;" data-original-title="Open / edit project" t-att-title="'Open / edit project, %s' % signage.name" />
+                    <!-- ## MENU :: COLLAPSE -->
+                    <span class="fa fa-folder fa-2x" style="margin: 0 auto;" data-original-title="Collapse project" t-att-title="'Collapse project, %s' % signage.name" />
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" t-att-data-target="'#collapse%s' % signage.id" aria-expanded="false" aria-controls="collapse" title="Add / edit / view">
                       <span t-field="signage.name" />
                     </button>
-                    <!-- ## VIEW WITH TOKEN -->
+                    <!-- ## MENU :: EDIT -->
+                    <!--
+                         # MENU = SIGNAGE
+                         #/signage/admin/menu/[name]/edit
+                    -->
+                    <a t-att-href="'/signage/admin/menu/%s/edit' % signage.id">
+                      <span class="fa fa-pencil fa-2x" style="margin: 0 auto;" data-original-title="Edit menu" title="Edit menu" border="0" />
+                    </a>
+                    <!-- ## MENU :: VIEW WITH TOKEN -->
+                    <!--
+                         # SHOW + TOKEN
+                         # /signage/view/menu/[name]/all/
+                    -->
                     Click to view, with token:
-                    <a t-att-href="'/signage/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
+                    <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
                       <span t-field="signage.name" />
                     </a>
-                    <select name="templateID">
-                      <option value="0">Choose template</option>
-                      <option value="2">Template 2 - 2 pages</option>
-                      <option value="3">Template 3 - 3 pages</option>
-                      <option value="4">Template 4 - 4 pages</option>
-                      <option value="5">Template 5 - 5 pages</option>
-                    </select>
                   </h5>
                 </div>
                 <!-- ## AREA / CONTENT :: EDIT -->
@@ -107,7 +113,14 @@
           </ul>
           <!-- // ##  FOR EACH-LOOP -->
           <!-- ## ADD SIGNAGE SHOWLIST -->
-          <form action="/signage/new_menu" method="post">
+          <form action="/signage/admin/menu/insert" method="post">
+            <select name="templateID">
+              <option value="0">Choose template</option>
+              <option value="2">Template 2 - 2 pages</option>
+              <option value="3">Template 3 - 3 pages</option>
+              <option value="4">Template 4 - 4 pages</option>
+              <option value="5">Template 5 - 5 pages</option>
+            </select>
             <input type="text" width="8" name="title" />
             <input type="submit" value="Add Signage" />
           </form>

@@ -1,6 +1,7 @@
-Documentation -- Signage
-2019-01-25
-
+# Documentation -- Signage
+# 2019-01-25
+# Vertel AB
+# www.vertel.se
 
 class signage_area
     _name = 'signage.area'
@@ -23,23 +24,41 @@ class signage_area_page
     limit = fields.Integer(string='Limit')
 
 
-Path convention
+# FONTS AS ICONS
+https://fontawesome.com/v4.7.0/icons/
 
-/signage/admin/menu/id/new
-/signage/admin/menu/id/edit
+edit = fa-pencil
+https://fontawesome.com/v4.7.0/icon/pencil
+
+# PROGRAMMING CONVENTION
+# PROJECT MAIN PATH:
+/signage/
+
+# SHOW + TOKEN
+/signage/view/menu/[id]/all?token=123
+
+# MENU = SIGNAGE
+/signage/admin/menu/insert
+/signage/admin/menu/[id]/edit
 /signage/admin/menu/id/view
 /signage/admin/menu/id/delete
 
+# SUBMENU = AREA
 /signage/admin/submenu/id/new
 /signage/admin/submenu/id/edit
 /signage/admin/submenu/id/view
 /signage/admin/submenu/id/delete
 
+# POST = THE ACTUAL PAGE ITSELF
 /signage/admin/post/id/new
 /signage/admin/post/id/edit
-/signage/admin/post/id/view
+/signage/admin/post/%s/updateTemplateID
+/signage/admin/post/%s/insert
 /signage/admin/post/id/delete
+/signage/admin/submenu/%s/insertPost
 
-/signage/view/menu/id/
+# VIEW
+/signage/view/menu/[id]/
 /signage/view/submenu/id/
-/signage/view/post/id/
+/signage/view/post/[id]/
+

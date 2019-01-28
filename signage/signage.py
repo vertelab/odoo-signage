@@ -52,7 +52,6 @@ class signage(models.Model):
     name = fields.Char(string='name')
     template_id = fields.Many2one(comodel_name='ir.ui.view')
     area_ids = fields.One2many(comodel_name='signage.area',inverse_name='signage_id')
-    default_areas = 
     state = fields.Selection([('draft','Draft'),('open','Open'),('closed','Closed')])
     description = fields.Text(string='Description')
     token = fields.Char(string="Token", help="Token calculates from Action 'Calculate Token'. Without token, this signage will be public.")
@@ -110,6 +109,7 @@ class signage_area(models.Model):
             res += 1
 
 
+
 class signage_area_page(models.Model):
     _name = 'signage.area.page'
 
@@ -164,8 +164,11 @@ class WebsiteSignage(http.Controller):
             else:
                 return request.render('website.403', {})
         return False
+
     # DIRECT URL TO THE ROTATING PAGE
-    @http.route(['/signage/<string:signage>/all'],type='http', auth='public', website=True)
+    # SHOW + TOKEN
+    # /signage/view/menu/all/
+    @http.route(['/signage/view/<string:signage>/all'],type='http', auth='public', website=True)
     def signage_view_all(self, signage, **post): #return the last page from a specified area
         signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
         if signage:
@@ -179,20 +182,55 @@ class WebsiteSignage(http.Controller):
                 return request.render('website.403', {})
         return False
 
-    # ADD / EDIT
-    @http.route(['/signage/menu/<model("signage.signage"):signage>/edit'],type='http', auth='user', website=True)
+    # EDIT MENU >> TO ADD POSTS
+    # ****************
+    # /signage/admin/menu/[id]/edit
+    @http.route(['/signage/admin/menu/<model("signage.signage"):signage>/edit'],type='http', auth='user', website=True)
     def signage_edit_signage(self, signage, **post): #return a specified page and activate edit mode
-                area_list = []
-                for area in signage.area_ids.sorted(lambda a: a.name):
-                    area_list.append('<div>%s</div>' % area.name)
+        area_list = []
+        for area in signage.area_ids.sorted(lambda a: a.name):
+            strText1 = ""
+            # /signage/admin/submenu/%s/insertPost        
+            strText2 = "<div><form action=\"/signage/admin/submenu/%s/insertPost\" method=\"post\">" % (area.id)
+            strText2 +="<input type=\"text\" size=\"10\" name=\"title\" />" \
+                + "<input type=\"submit\" value=\"Add...\" />" \
+                + "</div>"
+            for page in area.page_ids:
+                # /signage/admin/post/{id}/edit
+                strText1 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name)
+                # /signage/admin/post/{id}/delete
+                strText1 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id)
+            
+            area_list.append('%s <br />%s <br />%s' % (area.name, strText1, strText2))
+                        
+            _logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
+            _logger.warn('<<<<<<<<<<<<<<<<<  templatekey %s' % signage.template_id.key)
         return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
 
-    # ADD / EDIT PAGE
-    @http.route(['/signage/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
-    def signage_edit_page(self, page, **post): #return a specified page and activate edit mode
-        return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True})
 
-    # ADD / NEW PAGE IN AN AREA
+
+
+    # UPDATE TEMPLATE ID FOR POST
+    @http.route(['/signage/admin/post/updateTemplateID/<model("signage.area.page"):postID>/<model("signage.area"):subMenuID>'],type='http', auth='user', website=True)
+    def post_templateID (self, postID, subMenuID):
+        _logger.warn('<<<<<<<<<<<<<<<<<  postID = %s' % postID)
+        _logger.warn('<<<<<<<<<<<<<<<<<  subMenuID %s' % submenuID)
+
+
+    # EDIT POST
+    # /signage/admin/post/{id}/edit
+    @http.route(['/signage/admin/post/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
+    def signage_edit_page(self, page, **post): # return a specified page and activate edit mode
+        return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True, 'hide_header' : False})
+
+
+
+
+
+
+    # ADD / NEW PAGE IN AN AREA (POST)
+    # POST = PAGE
+    # /signage/admin/post/insert   
     @http.route(['/signage/<string:signage>/<string:area>/new_page'],type='http', auth='user', website=True)
     def signage_page_edit(self, signage, area=None,page=None, **post):
         signage = request.env['signage.signage'].search([('name','=',signage)])
@@ -207,8 +245,32 @@ class WebsiteSignage(http.Controller):
                 'template_id': template.id,
              })
             return werkzeug.utils.redirect('/signage/%s/edit' %new_page.id)
+
+
+    # ADD / NEW SIGNAGE
+    # MENU = SIGNAGE
+    # /signage/admin/menu/insert
+    @http.route(['/signage/admin/menu/insert'],type='http', auth='user', website=True)
+    def signage_menu_insert(self, **post):
+        
+        
+        if signage :
+            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
+            # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
+            area_name = '%s-%s' % (signage.name, area.name)
+            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
+            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
+            new_page = request.env['signage.area.page'].create({
+                'area_id': area.id,
+                'name': '%s_page_%s' % (area.name, area.nbr_pages + 1),
+                'template_id': template.id,
+             })
+            return werkzeug.utils.redirect('/signage/%s/edit_area' %new_area.id)
+
     # ADD / NEW AREA
-    @http.route(['/signage/<string:signage>/new_area'],type='http', auth='user', website=True)
+    # SUBMENU = AREA
+    # /signage/admin/submenu/insert
+    @http.route(['/signage/admin/submenu/<string:signage>/insert'],type='http', auth='user', website=True)
     def signage_area_insert(self, signage, **post):
         signage = request.env['signage.signage'].search([('name','=',signage)])
         if signage :
@@ -227,20 +289,21 @@ class WebsiteSignage(http.Controller):
     # ~ @http.route(['/signage/<string:signage>/<string:area>/editSubmenu'],type='http', auth='user', website=True)
     # ~ def signage_area_edit_submenu(self, signage, **post):
 
-
-    @http.route(['/signage/demo'], type='http', auth='public', website=True)
+    ## DEMO
+    @http.route(['/signage/view/demo'], type='http', auth='public', website=True)
     def signage_demo(self):
         return request.render('signage.signage_demo', {})
 
-    @http.route(['/signage/demo1'], type='http', auth='public', website=True)
+    ## DEMO
+    @http.route(['/signage/view/demo1'], type='http', auth='public', website=True)
     def signage_demo1(self):
         f = open('/usr/share/odoo-signage/signage/static/src/img/archive.gif')
         gif = f.read()
         f.close()
         return http.send_file(StringIO(gif),mimetype='image/gif')
 
-
-    @http.route(['/signage/demo3'], type='http', auth='public', website=True)
+    ## DEMO
+    @http.route(['/signage/view/demo3'], type='http', auth='public', website=True)
     def signage_demo1(self):
         fruits = ['Onsdag', 'Torsdag', 'Fredag', u'Måndag', 'Tisdag']
         counts = [55, 33, 44, 22, 44]
@@ -271,8 +334,6 @@ class WebsiteSignage(http.Controller):
         _logger.warn('<<<<<<<<<<<<<<<<<  svg %s' % svg)
 
         vdisplay.stop()
-        
-        
         return http.send_file(StringIO(svg),mimetype='image/svg-xml')        
 
     @http.route(['/signage_image/orders.svg'], type='http', auth='public', website=True)
