@@ -53,7 +53,7 @@ https://fontawesome.com/v4.7.0/icon/pencil
 /signage/admin/post/id/new
 /signage/admin/post/id/edit
 /signage/admin/post/%s/updateTemplateID
-/signage/admin/post/%s/insert
+/signage/admin/post/{menu.name}/{submenu.name}/insert 
 /signage/admin/post/id/delete
 /signage/admin/submenu/%s/insertPost
 
