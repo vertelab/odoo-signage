@@ -144,7 +144,7 @@ class signage_area_page(models.Model):
 
 
 class WebsiteSignage(http.Controller):
-    # 
+    #
     @http.route(['/signage','/signage/list'],type='http', auth='user', website=True)
     def signage_list(self, **post):
         return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')])})
@@ -177,7 +177,7 @@ class WebsiteSignage(http.Controller):
                 for area in signage.area_ids.sorted(lambda a: a.name):
                     res = area.get_next_page().template_id.render({'signage': signage, 'area': area, 'page': area.last_page, 'hide_header': True})
                     area_list.append(res)
-                return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
+                return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list, 'hide_signage_edit': True, 'hide_header': True})
             else:
                 return request.render('website.403', {})
         return False
@@ -190,7 +190,7 @@ class WebsiteSignage(http.Controller):
         area_list = []
         for area in signage.area_ids.sorted(lambda a: a.name):
             strText1 = ""
-            # /signage/admin/submenu/%s/insertPost        
+            # /signage/admin/submenu/%s/insertPost
             strText2 = "<div><form action=\"/signage/admin/submenu/%s/insertPost\" method=\"post\">" % (area.id)
             strText2 +="<input type=\"text\" size=\"10\" name=\"title\" />" \
                 + "<input type=\"submit\" value=\"Add...\" />" \
@@ -200,9 +200,9 @@ class WebsiteSignage(http.Controller):
                 strText1 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name)
                 # /signage/admin/post/{id}/delete
                 strText1 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id)
-            
+
             area_list.append('%s <br />%s <br />%s' % (area.name, strText1, strText2))
-                        
+
             _logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
             _logger.warn('<<<<<<<<<<<<<<<<<  templatekey %s' % signage.template_id.key)
         return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
@@ -221,7 +221,8 @@ class WebsiteSignage(http.Controller):
     # /signage/admin/post/{id}/edit
     @http.route(['/signage/admin/post/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
     def signage_edit_page(self, page, **post): # return a specified page and activate edit mode
-        return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True, 'hide_header' : False})
+        _logger.warn('<<<<<<<<<< %s :: %s :: %s :: %s' %(page.area_id.signage_id, page.area_id, page, page.template_id.key))
+        return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'hide_header': True})
 
 
 
@@ -230,7 +231,7 @@ class WebsiteSignage(http.Controller):
 
     # ADD / NEW PAGE IN AN AREA (POST)
     # POST = PAGE
-    # /signage/admin/post/insert   
+    # /signage/admin/post/insert
     @http.route(['/signage/<string:signage>/<string:area>/new_page'],type='http', auth='user', website=True)
     def signage_page_edit(self, signage, area=None,page=None, **post):
         signage = request.env['signage.signage'].search([('name','=',signage)])
@@ -252,8 +253,8 @@ class WebsiteSignage(http.Controller):
     # /signage/admin/menu/insert
     @http.route(['/signage/admin/menu/insert'],type='http', auth='user', website=True)
     def signage_menu_insert(self, **post):
-        
-        
+
+
         if signage :
             area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
             # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
@@ -321,20 +322,20 @@ class WebsiteSignage(http.Controller):
         p.legend.location = "top_center"
 
         _logger.warn('<<<<<<<<<<<<<<<<<  p %s' % p)
-        
+
         gif = p
         vdisplay = Xvfb()
         vdisplay.start()
 
         # launch stuff inside
         # virtual display here.
-        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
+        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())
         _logger.warn('<<<<<<<<<<<<<<<<<  png %s' % png.tobytes(encoder_name='raw'))
-        svg = get_svgs(p, webdriver=webdriver_control.create())    
+        svg = get_svgs(p, webdriver=webdriver_control.create())
         _logger.warn('<<<<<<<<<<<<<<<<<  svg %s' % svg)
 
         vdisplay.stop()
-        return http.send_file(StringIO(svg),mimetype='image/svg-xml')        
+        return http.send_file(StringIO(svg),mimetype='image/svg-xml')
 
     @http.route(['/signage_image/orders.svg'], type='http', auth='public', website=True)
     def signage_image_orders(self):
@@ -364,13 +365,13 @@ class WebsiteSignage(http.Controller):
         #t.seek(0)
         #print(t.read())
         #t.close()
-        
+
         vdisplay = Xvfb()
         vdisplay.start()
 
         # launch stuff inside
         # virtual display here.
-        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
+        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())
         _logger.warn('<<<<<<<<<<<<<<<<<  png %s' % png)
 
         vdisplay.stop()
