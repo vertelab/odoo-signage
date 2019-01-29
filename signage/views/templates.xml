@@ -2,67 +2,162 @@
 <openerp>
     <data>
         <!-- signage main page without header and footer -->
-        <template id="layout_header_footer" name="Signage Main layout">&lt;!DOCTYPE html&gt;
-            <html t-att-lang="lang and lang.replace('_', '-')"
-                  t-att-data-website-id="website and website.id or None"
-                  t-att-data-editable="'1' if editable else None"
-                  t-att-data-translatable="'1' if translatable else None"
-                  t-att-data-view-xmlid="xmlid if editable else None"
-                  t-att-data-main-object="repr(main_object) if editable else None"
-                  t-att-data-oe-company-name="res_company.name">
+        <template id="layout_header_footer" name="Signage Main layout">
+            &lt;!DOCTYPE html&gt;
+            <html t-att-lang="lang and lang.replace('_', '-')" t-att-data-website-id="website and website.id or None" t-att-data-editable="'1' if editable else None" t-att-data-translatable="'1' if translatable else None" t-att-data-view-xmlid="xmlid if editable else None" t-att-data-main-object="repr(main_object) if editable else None" t-att-data-oe-company-name="res_company.name">
                 <head>
                     <meta charset="utf-8" />
                     <t t-if="main_object and 'website_meta_title' in main_object and not title">
-                        <t t-set="title" t-value="main_object.website_meta_title"/>
+                        <t t-set="title" t-value="main_object.website_meta_title" />
                     </t>
                     <t t-if="main_object and 'name' in main_object and not title and not additional_title">
-                        <t t-set="additional_title" t-value="main_object.name"/>
+                        <t t-set="additional_title" t-value="main_object.name" />
                     </t>
                     <t t-if="not title">
-                        <t t-set="title"><t t-if="additional_title"><t t-raw="additional_title"/> | </t><t t-esc="(website or res_company).name"/></t>
-                    </t>
-
-                    <meta name="viewport" content="initial-scale=1"/>
-                    <meta name="description" t-att-content="main_object and 'website_meta_description' in main_object
-                        and main_object.website_meta_description or website_meta_description"/>
-                    <meta name="keywords" t-att-content="main_object and 'website_meta_keywords' in main_object
-                        and main_object.website_meta_keywords or website_meta_keywords"/>
-                    <meta name="generator" content="Odoo"/>
-                    <title><t t-esc="title"/></title>
-
-                    <t t-set="languages" t-value="website.get_languages() if website else None"/>
-                    <t t-if="request and request.website_multilang and website">
-                        <t t-foreach="website.get_alternate_languages(request.httprequest)" t-as="lg">
-                            <link rel="alternate" t-att-hreflang="lg['hreflang']" t-att-href="lg['href']"/>
+                        <t t-set="title">
+                            <t t-if="additional_title">
+                                <t t-raw="additional_title" />
+                                |
+                            </t>
+                            <t t-esc="(website or res_company).name" />
                         </t>
                     </t>
-
-                    <t t-call-assets="web.assets_common" t-js="false"/>
-                    <t t-call-assets="website.assets_frontend" t-js="false"/>
-
-                    <t t-raw="head or ''" name='layout_head'/>
+                    <meta name="viewport" content="initial-scale=1" />
+                    <meta name="description" t-att-content="main_object and 'website_meta_description' in main_object
+                        and main_object.website_meta_description or website_meta_description" />
+                    <meta name="keywords" t-att-content="main_object and 'website_meta_keywords' in main_object
+                        and main_object.website_meta_keywords or website_meta_keywords" />
+                    <meta name="generator" content="Odoo" />
+                    <title>
+                        <t t-esc="title" />
+                    </title>
+                    <t t-set="languages" t-value="website.get_languages() if website else None" />
+                    <t t-if="request and request.website_multilang and website">
+                        <t t-foreach="website.get_alternate_languages(request.httprequest)" t-as="lg">
+                            <link rel="alternate" t-att-hreflang="lg['hreflang']" t-att-href="lg['href']" />
+                        </t>
+                    </t>
+                    <t t-call-assets="web.assets_common" t-js="false" />
+                    <t t-call-assets="website.assets_frontend" t-js="false" />
+                    <t t-raw="head or ''" name='layout_head' />
                 </head>
                 <body>
                     <div id="wrapwrap">
-                        <header>
-                        </header>
+                        <header />
                         <main>
-                            <t t-raw="0"/>
+                            <t t-raw="0" />
                         </main>
                     </div>
-                    <t t-call-assets="web.assets_common" t-css="false"/>
-                    <t t-call-assets="website.assets_frontend" t-css="false"/>
-                    <script t-if="website and website.google_analytics_key">
-                        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-                        ga('create', _.str.trim('<t t-esc="website.google_analytics_key"/>'), 'auto');
-                        ga('send','pageview');
-                    </script>
+                    <t t-call-assets="web.assets_common" t-css="false" />
+                    <t t-call-assets="website.assets_frontend" t-css="false" />
                 </body>
             </html>
+        </template>
+        <!-- admin user menu -->
+        <template id="user_navbar" inherit_id="signage.layout_header_footer" groups="base.group_user">
+            <xpath expr="//body/div['id=wrawrap']" position="before">
+                <t t-if="website and menu_data and edit">
+                    <nav id="oe_main_menu_navbar" class="navbar navbar-inverse" role="navigation">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#oe_applications">
+                                <span class="icon-bar" />
+                                <span class="icon-bar" />
+                                <span class="icon-bar" />
+                            </button>
+                        </div>
+                        <ul id="oe_applications" class="nav navbar-nav navbar-left navbar-collapse collapse">
+                            <li class="dropdown active">
+                                <a href="#" class="dropdown-toggle hidden-xs" data-toggle="dropdown">
+                                    <i class="fa fa-th-large" />
+                                    Website
+                                    <b class="caret" />
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li t-foreach="menu_data['children']" t-as="menu">
+                                        <t t-call="web.menu_link" />
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul id="oe_editzone" class="nav navbar-nav hidden-xs" style="padding-left: 20px; display: none;" groups="base.group_website_publisher">
+                            <li>
+                                <button type="button" data-action="edit" class="btn btn-primary btn-xs">Edit</button>
+                            </li>
+                        </ul>
+                        <ul id="oe_systray" class="nav navbar-nav navbar-right pull-right hidden-xs">
+                            <!-- Mobile -->
+                            <li>
+                                <a data-action="show-mobile-preview" href="#">
+                                    <span title="Mobile preview">
+                                        <i class="fa fa-mobile" />
+                                    </span>
+                                </a>
+                            </li>
+                            <!-- Promote -->
+                            <li groups="base.group_website_designer">
+                                <a data-action="promote-current-page" href="#">
+                                    <span title="Promote page on the web">Promote</span>
+                                </a>
+                            </li>
+                            <!-- Content -->
+                            <li class="dropdown" groups="base.group_website_publisher">
+                                <a id="content-menu-button" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Content
+                                    <span class="caret" />
+                                </a>
+                                <ul class="dropdown-menu oe_content_menu" role="menu">
+                                    <li groups="base.group_website_designer">
+                                        <a data-action="edit_menu" href="#">
+                                            <span title="Edit Top Menu">Edit Menu</span>
+                                        </a>
+                                    </li>
+                                    <li class="divider" groups="base.group_website_designer" />
+                                    <li groups="base.group_website_designer">
+                                        <a href="#" data-action="new_page">New Page</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- Customize -->
+                            <li class="dropdown" id="customize-menu" groups="base.group_website_designer">
+                                <a id="customize-menu-button" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Customize
+                                    <span class="caret" />
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="#advanced-view-editor" data-action='ace'>HTML Editor</a>
+                                    </li>
+                                    <li>
+                                        <a href="/page/website.themes">Change Theme</a>
+                                    </li>
+                                    <li>
+                                        <a href="/web#return_label=Website&amp;action=website.action_module_website">Install Apps</a>
+                                    </li>
+                                    <li class="divider" />
+                                </ul>
+                            </li>
+                            <!-- Help -->
+                            <li class="dropdown">
+                                <a id="help-menu-button" class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Help
+                                    <span class="caret" />
+                                </a>
+                                <ul class="dropdown-menu" role="menu" id="help-menu">
+                                    <li class="dropdown-header">HELP &amp; TUTORIALS</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </t>
+            </xpath>
+        </template>
+        <template id="editor_head" inherit_id="signage.layout_header_footer" name="Editor" groups="base.group_website_publisher,base.group_website_designer">
+            <xpath expr="//t[@t-call-assets='website.assets_frontend'][@t-js]" position="after">
+                <t t-call-assets="website.assets_editor" t-js="false"/>
+            </xpath>
+            <xpath expr="//t[@t-call-assets='website.assets_frontend'][@t-css]" position="after">
+                <t t-call-assets="website.assets_editor" t-css="false"/>
+            </xpath>
         </template>
         <!-- signage area page -->
         <template id="layout">
@@ -123,11 +218,6 @@
                     <div class="col-sm-4" />
                     <div class="col-sm-4">
                         <h2>Signage</h2>
-                        <!--
-                             <t t-raw="signages" />
-                             <img src="/signage/static/src/img/documentation.gif" />
-                        -->
-                        <!-- ##  FOR EACH-LOOP -->
                         <ul t-foreach="signages" t-as="signage">
                             <div class="accordion" id="accordionExample">
                                 <div class="card">
@@ -139,8 +229,6 @@
                                             </button>
                                         </h5>
                                     </div>
-                                    <!-- ## CONTENT :: EDIT -->
-                                    <!--  Angelica - Faithfully (Eurotrance Remix) -->
                                     <div t-att-id="'collapse%s' % signage.id" class="collapse" t-att-aria-labelledby="'heading%s' % signage.id" data-parent="#accordionExample">
                                         <div class="card-body">
                                             <ul t-foreach="signage.area_ids" t-as="area">
@@ -152,7 +240,6 @@
                                                     <ul>
                                                         <t t-foreach="area.page_ids" t-as="page">
                                                             <li>
-                                                                <!-- ## LOOK -->
                                                                 <span class="fa fa-file-code-o fa-2x" style="margin: 0 auto;" data-original-title="Get content for project" t-att-title="'Get content for project %s' % signage.id" />
                                                                 Look, edit:
 
@@ -160,10 +247,6 @@
                                                                     <span t-field="page.name" />
                                                                 </a>
                                                                 <br />
-                                                                <!-- ## DELETE -->
-                                                                <!--
-                                                                     <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undo!" t-att-title="'Delete %. Ca NOT undo! %s' % page.name" />
-                                                                -->
                                                                 <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undu!" title="Delete. Can NOT undu!" />
                                                                 <a t-att-href="'/signage/%s/delete' % page.id">
                                                                     <span t-field="page.name" />
@@ -186,10 +269,12 @@
                                         </div>
                                     </div>
                                     <!-- ## ADD AREA -->
+<!--
                                     <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new area" title="Add new area" />
                                     <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
                                         <span>New Area</span>
                                     </a>
+-->
                                     <!-- // ## CONTENT :: EDIT -->
                                 </div>
                             </div>
@@ -233,53 +318,6 @@
                 </div>
             </t>
         </template>
-        <template id="signage_listxx" name="Signage List">
-            <t t-call="website.layout">
-                <div id="wrap" class="container">
-                    <div class="oe_structure oe_empty" />
-                    <div class="row col-md-offset-2">
-                        <h1>Signage</h1>
-                        <ul t-foreach="signages" t-as="signage">
-                            <li>
-                                <span t-field="signage.name" />
-                                Edit:
-                                <a t-att-href="'/signage/%s/edit' % signage.name">
-                                    <span t-field="signage.name" />
-                                </a>
-                                <ul t-foreach="signage.area_ids" t-as="area">
-                                    <li>
-                                        <span t-field="area.name" />
-                                        Limit
-                                        <span t-field="area.limit" />
-                                        <ul>
-                                            <t t-foreach="area.page_ids" t-as="page">
-                                                <li>
-                                                    Look, edit:
-                                                    <a t-att-href="'/signage/%s/edit' % page.id">
-                                                        <span t-field="page.name" />
-                                                    </a>
-                                                    Delete:
-                                                    <a t-att-href="'/signage/%s/delete' % page.id">
-                                                        <span t-field="page.name" />
-                                                    </a>
-                                                    Offset
-                                                    <span t-field="page.offset" />
-                                                </li>
-                                            </t>
-                                            <li>
-                                                <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)">
-                                                    <span>New Page</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </t>
-        </template>
         <template id="website.signage_page_template" name="Page Template">
             <t t-call="signage.layout">
                 <style>
@@ -303,15 +341,17 @@
         <!-- ## SHOW 5 SQUARES-->
         <template id="signage_square_5" name="Signage Square 5">
             <t t-call="signage.layout">
-                <title>Showcase</title>
-                <div class="row">
-                    <div class="col-sm-6" t-raw="area_list[0]" />
-                    <div class="col-sm-6" t-raw="area_list[1]" />
-                </div>
-                <div class="row">
-                    <div class="col-sm-4" t-raw="area_list[2]" />
-                    <div class="col-sm-4" t-raw="area_list[3]" />
-                    <div class="col-sm-4" t-raw="area_list[4]" />
+                <div class="container" style="width: 100%;">
+                    <title>Showcase</title>
+                    <div class="row">
+                        <div class="col-sm-6" t-raw="area_list[0]" />
+                        <div class="col-sm-6" t-raw="area_list[1]" />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4" t-raw="area_list[2]" />
+                        <div class="col-sm-4" t-raw="area_list[3]" />
+                        <div class="col-sm-4" t-raw="area_list[4]" />
+                    </div>
                 </div>
             </t>
         </template>

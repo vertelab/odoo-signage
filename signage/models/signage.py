@@ -181,7 +181,7 @@ class WebsiteSignage(http.Controller):
                 return request.render('website.403', {})
         return False
 
-    @http.route(['/signage/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
+    @http.route(['/signage/page/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
     def signage_edit_page(self, page, **post): #return a specified page and activate edit mode
         return request.render(page.template_id.xml_id, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True})
 
