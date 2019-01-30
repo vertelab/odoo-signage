@@ -338,22 +338,5 @@
                 </div>
             </t>
         </template>
-        <!-- ## SHOW 5 SQUARES-->
-        <template id="signage_square_5" name="Signage Square 5">
-            <t t-call="signage.layout">
-                <div class="container" style="width: 100%;">
-                    <title>Showcase</title>
-                    <div class="row">
-                        <div class="col-sm-6" t-raw="area_list[0]" />
-                        <div class="col-sm-6" t-raw="area_list[1]" />
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4" t-raw="area_list[2]" />
-                        <div class="col-sm-4" t-raw="area_list[3]" />
-                        <div class="col-sm-4" t-raw="area_list[4]" />
-                    </div>
-                </div>
-            </t>
-        </template>
     </data>
 </openerp>
