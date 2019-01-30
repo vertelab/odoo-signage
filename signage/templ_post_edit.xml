@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ## SHOW 5 SQUARES-->
+    <template id="signage_square_5" name="Signage Square 5">
+        <t t-call="signage.layout">
+            <title>Showcase</title>
+            <div class="container" style="width: 100%;">
+                <div class="row">
+                    <div class="col-sm-4" />
+                    <div class="col-sm-4" style="text-align:center">
+                        <h3>Edit Signage Templates</h3>
+                    </div>
+                    <div class="col-sm-4" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+                    <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+                </div>
+                <div class="row">
+                    <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+                    <div class="col-sm-4" t-raw="area_list[3]" style="text-align:center" />
+                    <div class="col-sm-4" t-raw="area_list[4]" style="text-align:center" />
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

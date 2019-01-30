@@ -30,26 +30,34 @@ https://fontawesome.com/v4.7.0/icons/
 edit = fa-pencil
 https://fontawesome.com/v4.7.0/icon/pencil
 
+# *******************************************
+
+# DESIGN PATTERN // COPY / PASTE - READY FOR ANY PROJECT
+# [project]
+#   [menu]
+#     [submenu]
+#       [post]
+
 # PROGRAMMING CONVENTION
 # PROJECT MAIN PATH:
 /signage/
 
-# SHOW + TOKEN
-/signage/view/menu/[id]/all?token=123
-
 # MENU = SIGNAGE
+# / project / admin / menu / ...
 /signage/admin/menu/insert
 /signage/admin/menu/[id]/edit
 /signage/admin/menu/id/view
 /signage/admin/menu/id/delete
 
 # SUBMENU = AREA
+# / project / admin / submenu / ...
 /signage/admin/submenu/id/new
 /signage/admin/submenu/id/edit
 /signage/admin/submenu/id/view
 /signage/admin/submenu/id/delete
 
 # POST = THE ACTUAL PAGE ITSELF
+# / project / admin / strPost / ...
 /signage/admin/post/id/new
 /signage/admin/post/id/edit
 /signage/admin/post/%s/updateTemplateID
@@ -58,7 +66,10 @@ https://fontawesome.com/v4.7.0/icon/pencil
 /signage/admin/submenu/%s/insertPost
 
 # VIEW
+# / project / view ...
 /signage/view/menu/[id]/
 /signage/view/submenu/id/
 /signage/view/post/[id]/
 
+# SHOW + TOKEN
+/signage/view/menu/[id]/all?token=123

@@ -167,7 +167,7 @@ class WebsiteSignage(http.Controller):
 
     # DIRECT URL TO THE ROTATING PAGE
     # SHOW + TOKEN
-    # /signage/view/menu/all/
+    # /signage/view/{menu.name}/all/
     @http.route(['/signage/view/<string:signage>/all'],type='http', auth='public', website=True)
     def signage_view_all(self, signage, **post): #return the last page from a specified area
         signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
@@ -235,7 +235,7 @@ class WebsiteSignage(http.Controller):
             template = request.env['ir.ui.view'].search([('key','=',xml_id)])
             new_page = request.env['signage.area.page'].create({
                 'area_id': area.id,
-                'name': ('%s_page_%s' % (area.name, area.nbr_pages + 1) )
+                'name': ('%s_page_%s' % (area.name, area.nbr_pages + 1) ),
                 'template_id': template.id,
              })
 
