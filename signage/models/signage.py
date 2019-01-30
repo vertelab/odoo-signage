@@ -101,7 +101,7 @@ class signage_area(models.Model):
                 break
         if not found and len(self.page_ids) > 0:
             self.last_page = self.page_ids[0]
-        return self.last_page
+        return self.last_page or self.page_ids[0]
 
     @api.multi
     def get_page_nbr(self, page):
