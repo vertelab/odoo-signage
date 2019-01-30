@@ -42,6 +42,11 @@
                     <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
                       <span t-field="signage.name" />
                     </a>
+                    <!-- ## PROJECT :: VIEW TO EDIT DATA  -->
+                    <!--
+                         # SHOW + TOKEN
+                         # /signage/view/menu/[name]/all/
+                    -->
                   </h5>
                 </div>
                 <!-- ## AREA / CONTENT :: EDIT -->

@@ -190,21 +190,21 @@ class WebsiteSignage(http.Controller):
         area_list = []
         for area in signage.area_ids.sorted(lambda a: a.name):
             strText1 = ""
-            # /signage/admin/submenu/%s/insertPost        
-            strText2 = "<div><form action=\"/signage/admin/submenu/%s/insertPost\" method=\"post\">" % (area.id)
-            strText2 +="<input type=\"text\" size=\"10\" name=\"title\" />" \
-                + "<input type=\"submit\" value=\"Add...\" />" \
-                + "</div>"
+            # /signage/admin/post/{id}/insert        
+            strText2 = "<div><form action=\"/signage/admin/post/%s/%s/insert\" method=\"post\"> \n" % (signage.name, area.name)
+            strText2 +="<input type=\"text\" size=\"10\" name=\"title\" /> \n" \
+                + "<input type=\"submit\" value=\"Add...\" /> \n" \
+                + "</form></div>" + "\n"
             for page in area.page_ids:
                 # /signage/admin/post/{id}/edit
-                strText1 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name)
+                strText1 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name) + "\n"
                 # /signage/admin/post/{id}/delete
-                strText1 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id)
+                strText1 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id) + "\n"
             
             area_list.append('%s <br />%s <br />%s' % (area.name, strText1, strText2))
                         
-            _logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
-            _logger.warn('<<<<<<<<<<<<<<<<<  templatekey %s' % signage.template_id.key)
+            #_logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
+            #_logger.warn('<<<<<<<<<<<<<<<<<  templatekey %s' % signage.template_id.key)
         return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
 
 
@@ -217,6 +217,32 @@ class WebsiteSignage(http.Controller):
         _logger.warn('<<<<<<<<<<<<<<<<<  subMenuID %s' % submenuID)
 
 
+    # ADD / NEW PAGE 
+    # 2019-01-28
+    # POST = PAGE
+    # /signage/admin/post/{menu.name}/{submenu.name}/insert   
+    @http.route(['/signage/admin/post/<string:signage>/<string:area>/insert'],type='http', auth='user', csrf=False, website=True)
+    def post_insert(self, signage, area=None, page=None, **post):
+        _logger.warn('<<<<<<<<<<<<<<<<<  post %s' % post)
+        signage = request.env['signage.signage'].search([('name','=',signage)])
+        if signage and area:
+            #title = ""
+            #title = post.get('title', '%s_page_%s' % (area.name, area.nbr_pages + 1) )
+            #_logger.warn('<<<<<<<<<<<<<<<<<  title %s' % title)
+            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
+            page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
+            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
+            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
+            new_page = request.env['signage.area.page'].create({
+                'area_id': area.id,
+                'name': ('%s_page_%s' % (area.name, area.nbr_pages + 1) )
+                'template_id': template.id,
+             })
+
+            # /signage/admin/post/{id}/edit
+            return werkzeug.utils.redirect('/signage/admin/post/%s/edit' %new_page.id)
+
+
     # EDIT POST
     # /signage/admin/post/{id}/edit
     @http.route(['/signage/admin/post/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
@@ -226,34 +252,11 @@ class WebsiteSignage(http.Controller):
 
 
 
-
-
-    # ADD / NEW PAGE IN AN AREA (POST)
-    # POST = PAGE
-    # /signage/admin/post/insert   
-    @http.route(['/signage/<string:signage>/<string:area>/new_page'],type='http', auth='user', website=True)
-    def signage_page_edit(self, signage, area=None,page=None, **post):
-        signage = request.env['signage.signage'].search([('name','=',signage)])
-        if signage and area:
-            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
-            page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
-            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
-            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
-            new_page = request.env['signage.area.page'].create({
-                'area_id': area.id,
-                'name': '%s_page_%s' % (area.name, area.nbr_pages + 1),
-                'template_id': template.id,
-             })
-            return werkzeug.utils.redirect('/signage/%s/edit' %new_page.id)
-
-
-    # ADD / NEW SIGNAGE
-    # MENU = SIGNAGE
+    # ADD / NEW SUBMENU
+    # SUBMENU = SIGNAGE
     # /signage/admin/menu/insert
-    @http.route(['/signage/admin/menu/insert'],type='http', auth='user', website=True)
+    @http.route(['/signage/admin/submenu/insert'],type='http', auth='user', website=True)
     def signage_menu_insert(self, **post):
-        
-        
         if signage :
             area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
             # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
