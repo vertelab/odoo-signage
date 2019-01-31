@@ -56,7 +56,7 @@
         <!-- admin user menu -->
         <template id="user_navbar" inherit_id="signage.layout_header_footer" groups="base.group_user">
             <xpath expr="//body/div['id=wrawrap']" position="before">
-                <t t-if="website and menu_data and edit">
+                <t t-if="website and menu_data and not hide_signage_edit">
                     <nav id="oe_main_menu_navbar" class="navbar navbar-inverse" role="navigation">
                         <div class="navbar-header">
                             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#oe_applications">
