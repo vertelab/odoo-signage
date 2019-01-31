@@ -26,17 +26,26 @@ class signage_area_page
 
 # FONTS AS ICONS
 https://fontawesome.com/v4.7.0/icons/
+https://fontawesome.com/v4.7.0/cheatsheet/
+
 
 edit = fa-pencil
 https://fontawesome.com/v4.7.0/icon/pencil
 
 # *******************************************
 
-# DESIGN PATTERN // COPY / PASTE - READY FOR ANY PROJECT
+# DESIGN PATTERN // COPY/PASTE - READY FOR ANY PROJECT
 # [project]
 #   [menu]
 #     [submenu]
 #       [post]
+
+# ADMIN VS.VIEW:
+# [project]
+#   [admin] >> CMS
+# [project]
+#   [view] >> PUBLIC
+
 
 # PROGRAMMING CONVENTION
 # PROJECT MAIN PATH:
@@ -44,32 +53,32 @@ https://fontawesome.com/v4.7.0/icon/pencil
 
 # MENU = SIGNAGE
 # / project / admin / menu / ...
-/signage/admin/menu/insert
-/signage/admin/menu/[id]/edit
-/signage/admin/menu/id/view
-/signage/admin/menu/id/delete
+/[project]/admin/menu/insert
+/[project]/admin/menu/{menu.id}/edit
+/[project]/admin/menu/id/view
+/[project]/admin/menu/{menu.id}/delete
 
 # SUBMENU = AREA
 # / project / admin / submenu / ...
-/signage/admin/submenu/id/new
-/signage/admin/submenu/id/edit
-/signage/admin/submenu/id/view
-/signage/admin/submenu/id/delete
+/[project]/admin/submenu/id/new
+/[project]/admin/submenu/id/edit
+/[project]/admin/submenu/id/view
+/[project]/admin/submenu/{submenu.id}/delete
 
 # POST = THE ACTUAL PAGE ITSELF
 # / project / admin / strPost / ...
-/signage/admin/post/id/new
-/signage/admin/post/id/edit
-/signage/admin/post/%s/updateTemplateID
-/signage/admin/post/{menu.name}/{submenu.name}/insert 
-/signage/admin/post/id/delete
-/signage/admin/submenu/%s/insertPost
+/[project]/admin/post/id/new
+/[project]/admin/post/id/edit
+/[project]/admin/post/%s/updateTemplateID
+/[project]/admin/post/{menu.name}/{submenu.name}/insert 
+/[project]/admin/post/{post.id}/delete
+/[project]/admin/submenu/%s/insertPost
 
 # VIEW
 # / project / view ...
-/signage/view/menu/[id]/
-/signage/view/submenu/id/
-/signage/view/post/[id]/
+/[project]/view/menu/[id]/
+/[project]/view/submenu/id/
+/[project]/view/post/[id]/
 
 # SHOW + TOKEN
-/signage/view/menu/[id]/all?token=123
+/signage/view/menu/{menu.id}/all?token=123

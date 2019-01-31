@@ -183,25 +183,44 @@ class WebsiteSignage(http.Controller):
         return False
 
     # EDIT MENU >> TO ADD POSTS
-    # ****************
-    # /signage/admin/menu/[id]/edit
+    # **********************************
+    # /signage/admin/menu/{menu.id}/edit
     @http.route(['/signage/admin/menu/<model("signage.signage"):signage>/edit'],type='http', auth='user', website=True)
     def signage_edit_signage(self, signage, **post): #return a specified page and activate edit mode
         area_list = []
         for area in signage.area_ids.sorted(lambda a: a.name):
-            strText1 = ""
+            strText2 = ""
             # /signage/admin/post/{id}/insert        
-            strText2 = "<div><form action=\"/signage/admin/post/%s/%s/insert\" method=\"post\"> \n" % (signage.name, area.name)
-            strText2 +="<input type=\"text\" size=\"10\" name=\"title\" /> \n" \
+            strText3 = "<div><form action=\"/signage/admin/post/%s/%s/insert\" method=\"post\"> \n" % (signage.name, area.name)
+            strText3 +="<input type=\"text\" size=\"10\" name=\"title\" /> \n" \
                 + "<input type=\"submit\" value=\"Add...\" /> \n" \
                 + "</form></div>" + "\n"
             for page in area.page_ids:
-                # /signage/admin/post/{id}/edit
-                strText1 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name) + "\n"
-                # /signage/admin/post/{id}/delete
-                strText1 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id) + "\n"
+                # FONTS AS ICONS
+                # https://fontawesome.com/v4.7.0/cheatsheet/
+                # EDIT = fa-pencil
+                # https://fontawesome.com/v4.7.0/icon/pencil
+                # /signage/admin/post/{post.id}/edit
+                # strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name) + "\n"
+                strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></a> %s" % (page.id, page.name) + "\n"
+                # TRASH = fa-trash
+                # https://fontawesome.com/v4.7.0/icon/trash
+                # /signage/admin/post/{post.id}/delete
+                # strText2 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id) + "\n"
+                strText2 += " <a href=\"/signage/admin/post/%s/delete\" title=\"Delete post\" alt=\"Delete post\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></div>" % (page.id) + "\n"
             
-            area_list.append('%s <br />%s <br />%s' % (area.name, strText1, strText2))
+            # EDIT SUBMENU
+            # /[project]/admin/submenu/{submenu.id}/edit
+            # strText1 = "<a href=\"/signage/admin/submenu/%s/edit/\" title=\"View / Edit Signage Area\" alt=\"View / Edit Signage Area\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></a> %s" % (area.id, area.name) + "\n"
+            # DELETE SUBMENU
+            # ONLY DELETE IF THERE ARE 0 PAGES!! :-)
+            # /[project]/admin/submenu/{submenu.id}/delete
+            # strText1 += " <a href=\"/signage/admin/submenu/%s/delete/\" title=\"Delete Signage Area\" alt=\"Delete Signage Area\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a>" % (area.id) + "\n"
+            
+            # *************************************************
+                        
+            area_list.append('%s <br />%s <br />%s' % (area.name, strText2, strText3))
+            # area_list.append('%s <br />%s <br />%s' % (strText1, strText2, strText3))
                         
             #_logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
             #_logger.warn('<<<<<<<<<<<<<<<<<  templatekey %s' % signage.template_id.key)
@@ -212,9 +231,27 @@ class WebsiteSignage(http.Controller):
 
     # UPDATE TEMPLATE ID FOR POST
     @http.route(['/signage/admin/post/updateTemplateID/<model("signage.area.page"):postID>/<model("signage.area"):subMenuID>'],type='http', auth='user', website=True)
-    def post_templateID (self, postID, subMenuID):
+    def update_postId (self, postID, subMenuID):
         _logger.warn('<<<<<<<<<<<<<<<<<  postID = %s' % postID)
         _logger.warn('<<<<<<<<<<<<<<<<<  subMenuID %s' % submenuID)
+
+    # DELETE POST
+    # /[project]/admin/post/{post.id}/{subMenuId.id}/delete
+    @http.route(['/signage/admin/post/<model("signage.area.page"):postId>/delete'],type='http', auth='user', website=True)
+    def delete_postId (self, postId):
+        _logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % postId)
+#        _logger.warn('<<<<<<<<<<<<<<<<<  subMenuID = %s' % subMenuId)
+#        self.search([(page.id, '=', postId)]).unlink()
+#        self.delete(postId)
+        self.delete()
+        
+        return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
+        
+        
+        
+        
+
+
 
 
     # ADD / NEW PAGE 
