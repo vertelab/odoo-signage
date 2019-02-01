@@ -2,7 +2,7 @@
 ##############################################################################
 #
 # Odoo, Open Source Enterprise Resource Management Solution, third party addon
-# Copyright (C) 2017- Vertel AB (<http://vertel.se>).
+# Copyright (C) 2019- Vertel AB (<http://vertel.se>).
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ from xvfbwrapper import Xvfb
 import logging
 _logger = logging.getLogger(__name__)
 
-
+# CODE + PROJECT IS COMPATIBLE WITH ODOO 10.
 class signage(models.Model):
     _name = 'signage.signage'
     _inherit = ['mail.thread']
@@ -202,12 +202,15 @@ class WebsiteSignage(http.Controller):
                 # https://fontawesome.com/v4.7.0/icon/pencil
                 # /signage/admin/post/{post.id}/edit
                 # strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name) + "\n"
-                strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></a> %s" % (page.id, page.name) + "\n"
+                strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">" % (page.id)
+                strText2 += "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></a> %s" % (page.name) + "\n"
+
                 # TRASH = fa-trash
                 # https://fontawesome.com/v4.7.0/icon/trash
-                # /signage/admin/post/{post.id}/delete
+                # /[project]/admin/post/{menuId.id}/{post.id}/delete
                 # strText2 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id) + "\n"
-                strText2 += " <a href=\"/signage/admin/post/%s/delete\" title=\"Delete post\" alt=\"Delete post\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></div>" % (page.id) + "\n"
+                # strText2 += " <a href=\"/signage/admin/post/%s/delete\" title=\"Delete post\" alt=\"Delete post\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></div>" % (page.id) + "\n"
+                strText2 += " <a href=\"/signage/admin/post/%s/%s/delete\" title=\"Delete post\" alt=\"Delete post\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></div>" % (signage.id, page.id) + "\n"
             
             # EDIT SUBMENU
             # /[project]/admin/submenu/{submenu.id}/edit
@@ -219,7 +222,7 @@ class WebsiteSignage(http.Controller):
             
             # *************************************************
                         
-            area_list.append('%s <br />%s <br />%s' % (area.name, strText2, strText3))
+            area_list.append('%s id: %s <br />%s <br />%s' % (area.name, area.id, strText2, strText3))
             # area_list.append('%s <br />%s <br />%s' % (strText1, strText2, strText3))
                         
             #_logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
@@ -229,30 +232,27 @@ class WebsiteSignage(http.Controller):
 
 
 
-    # UPDATE TEMPLATE ID FOR POST
-    @http.route(['/signage/admin/post/updateTemplateID/<model("signage.area.page"):postID>/<model("signage.area"):subMenuID>'],type='http', auth='user', website=True)
-    def update_postId (self, postID, subMenuID):
-        _logger.warn('<<<<<<<<<<<<<<<<<  postID = %s' % postID)
-        _logger.warn('<<<<<<<<<<<<<<<<<  subMenuID %s' % submenuID)
-
-    # DELETE POST
-    # /[project]/admin/post/{post.id}/{subMenuId.id}/delete
-    @http.route(['/signage/admin/post/<model("signage.area.page"):postId>/delete'],type='http', auth='user', website=True)
-    def delete_postId (self, postId):
-        _logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % postId)
-#        _logger.warn('<<<<<<<<<<<<<<<<<  subMenuID = %s' % subMenuId)
-#        self.search([(page.id, '=', postId)]).unlink()
-#        self.delete(postId)
-        self.delete()
-        
-        return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
-        
-        
+    # UPDATE NAME FOR POST
+    # /[project]/admin/post/{subMenuId.id}/{post.id}/edit
+    @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
+    def update_postId (self, signage, page):
+        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
+        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
+        page.write(name, 'name')
+        return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
         
         
 
-
-
+    # DELETE POST (The docs... https://www.npmjs.com/package/odoo-webkit)
+    # /[project]/admin/post/{menuId.id}/{post.id}/delete
+    @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/delete'],type='http', auth='user', website=True)
+    def delete_postId (self, signage, page):
+        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
+        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
+        page.unlink()
+        return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+        
+        
 
     # ADD / NEW PAGE 
     # 2019-01-28

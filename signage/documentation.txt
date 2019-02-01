@@ -2,6 +2,7 @@
 # 2019-01-25
 # Vertel AB
 # www.vertel.se
+# CODE COMPATIBLE WITH ODOO 10.0
 
 class signage_area
     _name = 'signage.area'
@@ -71,7 +72,7 @@ https://fontawesome.com/v4.7.0/icon/pencil
 /[project]/admin/post/id/edit
 /[project]/admin/post/%s/updateTemplateID
 /[project]/admin/post/{menu.name}/{submenu.name}/insert 
-/[project]/admin/post/{post.id}/delete
+/[project]/admin/post/{menu.id}/{post.id}/delete
 /[project]/admin/submenu/%s/insertPost
 
 # VIEW
