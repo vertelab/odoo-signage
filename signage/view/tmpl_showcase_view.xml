@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- ## SHOW 1 PAGES / AREAS (1) -->
+  <template id="showcase_1" name="Showcase 1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[0]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 2 PAGES / AREAS (2) -->
+  <template id="showcase_2_1" name="Showcase 2:1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 2 PAGES / AREAS (1 + 1) -->
+  <template id="showcase_2_2" name="Showcase 2:2">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[0]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 3 PAGES / AREAS (3 in a row) -->
+  <template id="showcase_3_1" name="Showcase 3:1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[1]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 3 PAGES / AREAS (2 + 1) -->
+  <template id="showcase_3_2" name="Showcase 3:2">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 3 PAGES / AREAS (1 + 2) -->
+  <template id="showcase_3_3" name="Showcase 3:3">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[0]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 4 PAGES / AREAS (2 + 2) -->
+  <template id="showcase_4" name="Showcase 4">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[2]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[3]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 5 PAGES / AREAS (3 + 2) -->
+  <template id="showcase_5_1" name="Showcase 5:1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[1]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[3]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[4]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 5 PAGES / AREAS (2 + 3) -->
+  <template id="showcase_5_2" name="Showcase 5:2">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <!--
+             <div class="row">
+             <div class="col-sm-4" />
+             <div class="col-sm-4" style="text-align:center">
+             <h3>
+             <a href="/signage/" title="Index" alt="Index">
+             <i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true" />
+             </a>
+             Edit Signage Templates
+             </h3>
+             </div>
+             <div class="col-sm-4" />
+             </div>
+        -->
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[3]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[4]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <record id="showcase_1" model="ir.ui.view">
+    <field name="number_of_areas">1</field>
+  </record>
+  <record id="showcase_2_1" model="ir.ui.view">
+    <field name="number_of_areas">2</field>
+  </record>
+  <record id="showcase_2_2" model="ir.ui.view">
+    <field name="number_of_areas">2</field>
+  </record>
+  <record id="showcase_3_1" model="ir.ui.view">
+    <field name="number_of_areas">3</field>
+  </record>
+  <record id="showcase_3_2" model="ir.ui.view">
+    <field name="number_of_areas">3</field>
+  </record>
+  <record id="showcase_3_3" model="ir.ui.view">
+    <field name="number_of_areas">3</field>
+  </record>
+  <record id="showcase_4" model="ir.ui.view">
+    <field name="number_of_areas">4</field>
+  </record>
+  <record id="showcase_5_1" model="ir.ui.view">
+    <field name="number_of_areas">5</field>
+  </record>
+  <record id="showcase_5_2" model="ir.ui.view">
+    <field name="number_of_areas">5</field>
+  </record>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="website.signage_page_template" name="Page Template">
+    <t t-call="signage.layout">
+      <style>
+        <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow" rel="stylesheet" />
+      </style>
+      <style>
+        html, body {
+        height: 100%;
+        margin: 0;
+        }
+        main {
+        font-family: 'PT Sans Narrow', sans-serif !important;
+        height: 100%;
+        }
+      </style>
+      <div id="wrap">
+        <div class="oe_structure oe_empty" />
+      </div>
+    </t>
+  </template>
+</odoo>
