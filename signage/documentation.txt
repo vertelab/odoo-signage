@@ -77,9 +77,9 @@ https://fontawesome.com/v4.7.0/icon/pencil
 
 # VIEW
 # / project / view ...
-/[project]/view/menu/[id]/
+/[project]/view/menu/{menu.id}/
+# SHOW + TOKEN
+#/signage/view/menu/{menu.name}/submenu.name/all?token=123
 /[project]/view/submenu/id/
 /[project]/view/post/[id]/
 
-# SHOW + TOKEN
-/signage/view/menu/{menu.id}/all?token=123

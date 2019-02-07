@@ -142,7 +142,14 @@ class signage_area_page(models.Model):
     # http://erikflowers.github.io/weather-icons/
     # http://opendata.smhi.se/apidocs/metfcst/index.html
 
-
+class ir_ui_view(models.Model):
+    _inherit = 'ir.ui.view'
+    # ~ When back-office fail to upgrade a new column to db:
+    # ~ odooupdm {databasename} {module.name}
+    # ~ odooupdm test3 signage
+    number_of_areas = fields.Integer(string='Number of Areas')
+  
+    
 class WebsiteSignage(http.Controller):
     # 
     @http.route(['/signage','/signage/list'],type='http', auth='user', website=True)
@@ -153,6 +160,8 @@ class WebsiteSignage(http.Controller):
     def signage_overview(self, **post):
         return request.render('signage.signage_overview', {'signages': request.env['signage.signage'].search([('state','=','open')])})
 
+    # SHOW + TOKEN
+    #/signage/view/menu/{menu.name}/submenu.name/all?token=123
     @http.route(['/signage/<string:signage>/<string:area>'],type='http', auth='public', website=True)
     def signage_view_page(self, signage, area, **post): #return the last page from a specified area
         signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
@@ -190,9 +199,10 @@ class WebsiteSignage(http.Controller):
         area_list = []
         for area in signage.area_ids.sorted(lambda a: a.name):
             strText2 = ""
-            # /signage/admin/post/{id}/insert        
+            # /signage/admin/post/{menu.name}/{area.name}/insert        
             strText3 = "<div><form action=\"/signage/admin/post/%s/%s/insert\" method=\"post\"> \n" % (signage.name, area.name)
             strText3 +="<input type=\"text\" size=\"10\" name=\"title\" /> \n" \
+                + "<input type=\"hidden\" name=\"returnPath\" value=\"signageAdminMenuEdit\"> \n" \
                 + "<input type=\"submit\" value=\"Add...\" /> \n" \
                 + "</form></div>" + "\n"
             for page in area.page_ids:
@@ -201,15 +211,12 @@ class WebsiteSignage(http.Controller):
                 # EDIT = fa-pencil
                 # https://fontawesome.com/v4.7.0/icon/pencil
                 # /signage/admin/post/{post.id}/edit
-                # strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">EDIT</a> %s" % (page.id, page.name) + "\n"
                 strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">" % (page.id)
                 strText2 += "<i class=\"fa fa-pencil\" aria-hidden=\"true\"></i></a> %s" % (page.name) + "\n"
 
                 # TRASH = fa-trash
                 # https://fontawesome.com/v4.7.0/icon/trash
                 # /[project]/admin/post/{menuId.id}/{post.id}/delete
-                # strText2 += " <a href=\"/signage/admin/post/%s/delete/\" title=\"Delete post\" alt=\"Delete post\">Delete</a></div>" % (page.id) + "\n"
-                # strText2 += " <a href=\"/signage/admin/post/%s/delete\" title=\"Delete post\" alt=\"Delete post\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></div>" % (page.id) + "\n"
                 strText2 += " <a href=\"/signage/admin/post/%s/%s/delete\" title=\"Delete post\" alt=\"Delete post\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></div>" % (signage.id, page.id) + "\n"
             
             # EDIT SUBMENU
@@ -221,19 +228,43 @@ class WebsiteSignage(http.Controller):
             # strText1 += " <a href=\"/signage/admin/submenu/%s/delete/\" title=\"Delete Signage Area\" alt=\"Delete Signage Area\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a>" % (area.id) + "\n"
             
             # *************************************************
-                        
+
             area_list.append('%s id: %s <br />%s <br />%s' % (area.name, area.id, strText2, strText3))
             # area_list.append('%s <br />%s <br />%s' % (strText1, strText2, strText3))
                         
             #_logger.warn('<<<<<<<<<<<<<<<<<  area_list %s' % area_list)
             #_logger.warn('<<<<<<<<<<<<<<<<<  templatekey %s' % signage.template_id.key)
-        return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
-
+        return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list, 'hide_header': False, 'code_previous_page' : """        <div class="row">
+          <div class="col-sm-4" />
+          <div class="col-sm-4" style="text-align:center">
+            <!--
+                 # https://fontawesome.com/v4.7.0/icon/arrow-circle-left
+            -->
+            <h3>
+              <a href="/signage/" title="Index" alt="Index">
+                <i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true" />
+              </a>
+              Edit Signage Templates
+            </h3>
+          </div>
+          <div class="col-sm-4" />
+        </div>
+"""})
 
 
 
     # UPDATE NAME FOR POST
-    # /[project]/admin/post/{subMenuId.id}/{post.id}/edit
+    # /[project]/admin/post/{menuId.id}/{post.id}/edit
+    @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
+    def update_postId (self, signage, page):
+        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
+        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
+        page.write(name, 'name')
+        return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+        
+        
+    # UPDATE NAME FOR POST
+    # /[project]/admin/post/{menuId.id}/{post.id}/edit
     @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
     def update_postId (self, signage, page):
         #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
@@ -251,8 +282,6 @@ class WebsiteSignage(http.Controller):
         #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
         page.unlink()
         return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-        
-        
 
     # ADD / NEW PAGE 
     # 2019-01-28
@@ -263,7 +292,12 @@ class WebsiteSignage(http.Controller):
         _logger.warn('<<<<<<<<<<<<<<<<<  post %s' % post)
         signage = request.env['signage.signage'].search([('name','=',signage)])
         if signage and area:
-            #title = ""
+            title = ""
+            if post.get('title') == "":
+                title = "page"
+            else:
+                title = post.get('title')
+
             #title = post.get('title', '%s_page_%s' % (area.name, area.nbr_pages + 1) )
             #_logger.warn('<<<<<<<<<<<<<<<<<  title %s' % title)
             area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
@@ -272,12 +306,27 @@ class WebsiteSignage(http.Controller):
             template = request.env['ir.ui.view'].search([('key','=',xml_id)])
             new_page = request.env['signage.area.page'].create({
                 'area_id': area.id,
-                'name': ('%s_page_%s' % (area.name, area.nbr_pages + 1) ),
+                'name': ('%s_%s_%s' % (area.name, title, area.nbr_pages + 1) ),
                 'template_id': template.id,
              })
 
             # /signage/admin/post/{id}/edit
-            return werkzeug.utils.redirect('/signage/admin/post/%s/edit' %new_page.id)
+            # REDIRECT >> EDIT NEW POST
+            # return werkzeug.utils.redirect('/signage/admin/post/%s/edit' %new_page.id)
+            # REDIRECT >> OVERVIEW
+            # ~ if post.get('returnPath') == "signage-admin-menu-edit":
+                # ~ return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+            # ~ elif:
+                # ~ return werkzeug.utils.redirect('/signage/')
+            # ~ else:
+            if post.get("returnPath") == "signageAdminMenuEdit":
+                return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+            elif post.get("returnPath") == "signage":
+                return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+                # ~ return werkzeug.utils.redirect('/signage')
+            # ~ else:
+                # ~ return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+
 
 
     # EDIT POST
