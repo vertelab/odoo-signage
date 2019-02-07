@@ -4,6 +4,22 @@
 # www.vertel.se
 # CODE COMPATIBLE WITH ODOO 10.0
 
+class signage(models.Model):
+    _name = 'signage.signage'
+    _inherit = ['mail.thread']
+
+    name = fields.Char(string='name')
+    template_id = fields.Many2one(comodel_name='ir.ui.view')
+    area_ids = fields.One2many(comodel_name='signage.area',inverse_name='signage_id')
+    state = fields.Selection([('draft','Draft'),('open','Open'),('closed','Closed')])
+    description = fields.Text(string='Description')
+    token = fields.Char(string="Token", help="Token calculates from Action 'Calculate Token'. Without token, this signage will be public.")
+
+    @api.multi
+    def get_token(self):
+        token = hashlib.sha1('%s%s' %(self.name, datetime.datetime.now())).hexdigest()
+        return token
+
 class signage_area
     _name = 'signage.area'
 

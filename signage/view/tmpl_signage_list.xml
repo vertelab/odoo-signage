@@ -125,20 +125,80 @@
           <div class="col-sm-8">
             <!-- ## 2019-02-04 :: TEMPLATE SELECTION -->
             <!--
+                 The hard and complicated way:
                  https://stackoverflow.com/questions/43463916/create-radio-button-condition-in-odoo-9
+            -->
+            <!--
+                 Bootstrap Radio Buttons, for the best developing copy/paste experience.
+                 https://www.w3schools.com/bootstrap/bootstrap_forms_inputs.asp
+                 
             -->
             <form action="/signage/admin/menu/insert" method="post">
               <label class="radio-inline">
-                <input type="radio" name="optradio" checked="1" />
-                Option 1
+                <input type="radio" name="default_layout" value="showcase_1" checked="1" />
+                <!--
+                     <img src="/signage/static/src/img/documentation.gif" />
+                -->
+                <span>Showcase layout 1</span>
+                <img src="/signage/static/src/img/showcase_1.png" />
+                <br />
+                <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradio" />
-                Option 2
+                <input type="radio" name="default_layout" value="showcase_2_1" />
+                <span>Showcase layout 2:1</span>
+                <img src="/signage/static/src/img/showcase_2_1.png" />
+                <br />
+                <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradio" />
-                Option 3
+                <input type="radio" name="default_layout" value="showcase_2_2" />
+                <span>Showcase layout 2:2</span>
+                <img src="/signage/static/src/img/showcase_2_2.png" />
+                <br />
+                <br />
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="default_layout" value="showcase_3_1" />
+                <span>Showcase layout 3:1</span>
+                <img src="/signage/static/src/img/showcase_3_1.png" />
+                <br />
+                <br />
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="default_layout" value="showcase_3_2" />
+                <span>Showcase layout 3:2</span>
+                <img src="/signage/static/src/img/showcase_3_2.png" />
+                <br />
+                <br />
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="default_layout" value="showcase_3_3" />
+                <span>Showcase layout 3:3</span>
+                <img src="/signage/static/src/img/showcase_3_3.png" />
+                <br />
+                <br />
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="default_layout" value="showcase_4" />
+                <span>Showcase layout 4</span>
+                <img src="/signage/static/src/img/showcase_4.png" />
+                <br />
+                <br />
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="default_layout" value="showcase_5_1" />
+                <span>Showcase layout 5:1</span>
+                <img src="/signage/static/src/img/showcase_5_1.png" />
+                <br />
+                <br />
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="default_layout" value="showcase_5_2" />
+                <span>Showcase layout 5:2</span>
+                <img src="/signage/static/src/img/showcase_5_2.png" />
+                <br />
+                <br />
               </label>
               <!--
                    <select name="templateID">

@@ -144,11 +144,15 @@ class signage_area_page(models.Model):
 
 class ir_ui_view(models.Model):
     _inherit = 'ir.ui.view'
-    # ~ When back-office fail to upgrade a new column to db:
+    # ~ When back-office fail to upgrade a new column to database, then update by code:
     # ~ odooupdm {databasename} {module.name}
     # ~ odooupdm test3 signage
     number_of_areas = fields.Integer(string='Number of Areas')
   
+    
+
+    
+    
     
 class WebsiteSignage(http.Controller):
     # 
@@ -336,25 +340,39 @@ class WebsiteSignage(http.Controller):
         return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True, 'hide_header' : False})
 
 
+    # ~ https://jaxenter.com/implement-switch-case-statement-python-138315.html
+    global switcher
+    switcher = ""
+    def switch_layout(argument):
+        switcher = {
+            "showcase_5_2" : 9,
+        }
+        # ~ print switcher.get(argument, "Invalid month")
 
 
-    # ADD / NEW SUBMENU
-    # SUBMENU = SIGNAGE
+    # ADD / NEW MENU
+    # MENU = SIGNAGE
     # /signage/admin/menu/insert
-    @http.route(['/signage/admin/submenu/insert'],type='http', auth='user', website=True)
+    @http.route(['/signage/admin/menu/insert'],type='http', auth='user', csrf=False, website=True)
     def signage_menu_insert(self, **post):
-        if signage :
-            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
-            # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
-            area_name = '%s-%s' % (signage.name, area.name)
-            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
-            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
-            new_page = request.env['signage.area.page'].create({
-                'area_id': area.id,
-                'name': '%s_page_%s' % (area.name, area.nbr_pages + 1),
-                'template_id': template.id,
-             })
-            return werkzeug.utils.redirect('/signage/%s/edit_area' %new_area.id)
+        _logger.warn('<<<<<<<<<<<<<<<<<  title: %s' % post.get('title'))
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout') )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout')[0] )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % switcher.get( post.get('default_layout'), "Invalid month") )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout'))]) )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])]) )
+        # ~ switcher.get(argument, "Invalid month")
+        title = ""
+        if post.get('title') == "":
+            title = "Showcase"
+        else:
+            title = post.get('title')
+
+        new_signage = request.env['signage.signage'].create({
+            'name': title ,
+            'template_id': request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])])
+        })
+        return werkzeug.utils.redirect('/signage/')
 
     # ADD / NEW AREA
     # SUBMENU = AREA
