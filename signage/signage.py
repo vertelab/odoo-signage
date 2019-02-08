@@ -109,7 +109,6 @@ class signage_area(models.Model):
             res += 1
 
 
-
 class signage_area_page(models.Model):
     _name = 'signage.area.page'
 
@@ -148,21 +147,16 @@ class ir_ui_view(models.Model):
     # ~ odooupdm {databasename} {module.name}
     # ~ odooupdm test3 signage
     number_of_areas = fields.Integer(string='Number of Areas')
-  
-    
-
-    
     
     
 class WebsiteSignage(http.Controller):
+    # ORDER OF ROUTING:
+    # 1. ROUTING (INDEX / SHOW) <--- ***
+    # 2. INSERT
+    # 3. UPDATE
+    # 4. DELETE
     # 
-    @http.route(['/signage','/signage/list'],type='http', auth='user', website=True)
-    def signage_list(self, **post):
-        return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')])})
 
-    @http.route(['/signage/overview'],type='http', auth='user', website=True)
-    def signage_overview(self, **post):
-        return request.render('signage.signage_overview', {'signages': request.env['signage.signage'].search([('state','=','open')])})
 
     # SHOW + TOKEN
     #/signage/view/menu/{menu.name}/submenu.name/all?token=123
@@ -194,6 +188,87 @@ class WebsiteSignage(http.Controller):
             else:
                 return request.render('website.403', {})
         return False
+
+    # ORDER OF ROUTING:
+    # 1. ROUTING (INDEX / SHOW)
+    # 2. INSERT <--- ***
+    # 3. UPDATE
+    # 4. DELETE
+
+    # INSERT NEW AREA
+    # SUBMENU = AREA
+    # /signage/admin/submenu/insert
+    @http.route(['/signage/admin/submenu/<string:signage>/insert'],type='http', auth='user', website=True)
+    def signage_area_insert(self, signage, **post):
+        signage = request.env['signage.signage'].search([('name','=',signage)])
+        if signage :
+            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
+            # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
+            area_name = '%s-%s' % (signage.name, area.name)
+            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
+            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
+            new_page = request.env['signage.area.page'].create({
+                'area_id': area.id,
+                'name': '%s_page_%s' % (area.name, area.nbr_pages + 1),
+                'template_id': template.id,
+             })
+        return werkzeug.utils.redirect('/signage/%s/edit_area' %new_area.id)
+
+    # ~ @http.route(['/signage/<string:signage>/<string:area>/editSubmenu'],type='http', auth='user', website=True)
+    # ~ def signage_area_edit_submenu(self, signage, **post):
+
+    # INSERT NEW PAGE 
+    # 2019-01-28
+    # POST = PAGE
+    # /signage/admin/post/{menu.name}/{submenu.name}/insert   
+    @http.route(['/signage/admin/post/<string:signage>/<string:area>/insert'],type='http', auth='user', csrf=False, website=True)
+    def post_insert(self, signage, area=None, page=None, **post):
+        _logger.warn('<<<<<<<<<<<<<<<<<  post %s' % post)
+        signage = request.env['signage.signage'].search([('name','=',signage)])
+        if signage and area:
+            title = ""
+            if post.get('title') == "":
+                title = "page"
+            else:
+                title = post.get('title')
+
+            #title = post.get('title', '%s_page_%s' % (area.name, area.nbr_pages + 1) )
+            #_logger.warn('<<<<<<<<<<<<<<<<<  title %s' % title)
+            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
+            page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
+            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
+            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
+            new_page = request.env['signage.area.page'].create({
+                'area_id': area.id,
+                'name': ('%s_%s_%s' % (area.name, title, area.nbr_pages + 1) ),
+                'template_id': template.id,
+             })
+
+            # /signage/admin/post/{id}/edit
+            # REDIRECT >> EDIT NEW POST
+            # return werkzeug.utils.redirect('/signage/admin/post/%s/edit' %new_page.id)
+            # REDIRECT >> OVERVIEW
+            # ~ if post.get('returnPath') == "signage-admin-menu-edit":
+                # ~ return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+            # ~ elif:
+                # ~ return werkzeug.utils.redirect('/signage/')
+            # ~ else:
+            if post.get("returnPath") == "signageAdminMenuEdit":
+                return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+            elif post.get("returnPath") == "signage":
+                return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+                # ~ return werkzeug.utils.redirect('/signage')
+            # ~ else:
+                # ~ return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+
+
+
+    # ORDER OF ROUTING:
+    # 1. ROUTING (INDEX)
+    # 2. INSERT
+    # 3. UPDATE <--- *** 
+    # 4. DELETE 
+
 
     # EDIT MENU >> TO ADD POSTS
     # **********************************
@@ -253,240 +328,9 @@ class WebsiteSignage(http.Controller):
           </div>
           <div class="col-sm-4" />
         </div>
-"""})
+        """})
 
 
-
-    # UPDATE NAME FOR POST
-    # /[project]/admin/post/{menuId.id}/{post.id}/edit
-    @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
-    def update_postId (self, signage, page):
-        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
-        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
-        page.write(name, 'name')
-        return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-        
-        
-    # UPDATE NAME FOR POST
-    # /[project]/admin/post/{menuId.id}/{post.id}/edit
-    @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
-    def update_postId (self, signage, page):
-        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
-        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
-        page.write(name, 'name')
-        return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-        
-        
-
-    # DELETE POST (The docs... https://www.npmjs.com/package/odoo-webkit)
-    # /[project]/admin/post/{menuId.id}/{post.id}/delete
-    @http.route(['/signage/admin/post/<model("signage.signage"):signage>/<model("signage.area.page"):page>/delete'],type='http', auth='user', website=True)
-    def delete_postId (self, signage, page):
-        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
-        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
-        page.unlink()
-        return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-
-    # ADD / NEW PAGE 
-    # 2019-01-28
-    # POST = PAGE
-    # /signage/admin/post/{menu.name}/{submenu.name}/insert   
-    @http.route(['/signage/admin/post/<string:signage>/<string:area>/insert'],type='http', auth='user', csrf=False, website=True)
-    def post_insert(self, signage, area=None, page=None, **post):
-        _logger.warn('<<<<<<<<<<<<<<<<<  post %s' % post)
-        signage = request.env['signage.signage'].search([('name','=',signage)])
-        if signage and area:
-            title = ""
-            if post.get('title') == "":
-                title = "page"
-            else:
-                title = post.get('title')
-
-            #title = post.get('title', '%s_page_%s' % (area.name, area.nbr_pages + 1) )
-            #_logger.warn('<<<<<<<<<<<<<<<<<  title %s' % title)
-            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
-            page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
-            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
-            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
-            new_page = request.env['signage.area.page'].create({
-                'area_id': area.id,
-                'name': ('%s_%s_%s' % (area.name, title, area.nbr_pages + 1) ),
-                'template_id': template.id,
-             })
-
-            # /signage/admin/post/{id}/edit
-            # REDIRECT >> EDIT NEW POST
-            # return werkzeug.utils.redirect('/signage/admin/post/%s/edit' %new_page.id)
-            # REDIRECT >> OVERVIEW
-            # ~ if post.get('returnPath') == "signage-admin-menu-edit":
-                # ~ return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-            # ~ elif:
-                # ~ return werkzeug.utils.redirect('/signage/')
-            # ~ else:
-            if post.get("returnPath") == "signageAdminMenuEdit":
-                return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-            elif post.get("returnPath") == "signage":
-                return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-                # ~ return werkzeug.utils.redirect('/signage')
-            # ~ else:
-                # ~ return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
-
-
-
-    # EDIT POST
-    # /signage/admin/post/{id}/edit
-    @http.route(['/signage/admin/post/<model("signage.area.page"):page>/edit'],type='http', auth='user', website=True)
-    def signage_edit_page(self, page, **post): # return a specified page and activate edit mode
-        return request.render(page.template_id.key, {'signage': page.area_id.signage_id, 'area': page.area_id, 'page': page, 'edit': True, 'hide_header' : False})
-
-
-    # ~ https://jaxenter.com/implement-switch-case-statement-python-138315.html
-    global switcher
-    switcher = ""
-    def switch_layout(argument):
-        switcher = {
-            "showcase_5_2" : 9,
-        }
-        # ~ print switcher.get(argument, "Invalid month")
-
-
-    # ADD / NEW MENU
-    # MENU = SIGNAGE
-    # /signage/admin/menu/insert
-    @http.route(['/signage/admin/menu/insert'],type='http', auth='user', csrf=False, website=True)
-    def signage_menu_insert(self, **post):
-        _logger.warn('<<<<<<<<<<<<<<<<<  title: %s' % post.get('title'))
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout') )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout')[0] )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % switcher.get( post.get('default_layout'), "Invalid month") )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout'))]) )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])]) )
-        # ~ switcher.get(argument, "Invalid month")
-        title = ""
-        if post.get('title') == "":
-            title = "Showcase"
-        else:
-            title = post.get('title')
-
-        new_signage = request.env['signage.signage'].create({
-            'name': title ,
-            'template_id': request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])])
-        })
-        return werkzeug.utils.redirect('/signage/')
-
-    # ADD / NEW AREA
-    # SUBMENU = AREA
-    # /signage/admin/submenu/insert
-    @http.route(['/signage/admin/submenu/<string:signage>/insert'],type='http', auth='user', website=True)
-    def signage_area_insert(self, signage, **post):
-        signage = request.env['signage.signage'].search([('name','=',signage)])
-        if signage :
-            area = request.env['signage.area'].search([('name','=',area),('signage_id','=',signage.id)])
-            # ~ page_name = '%s-%s-%s' % (signage.name, area.name,'p%s' % (area.nbr_pages + 1))
-            area_name = '%s-%s' % (signage.name, area.name)
-            xml_id = request.env['website'].new_page(page_name, template='website.signage_page_template')
-            template = request.env['ir.ui.view'].search([('key','=',xml_id)])
-            new_page = request.env['signage.area.page'].create({
-                'area_id': area.id,
-                'name': '%s_page_%s' % (area.name, area.nbr_pages + 1),
-                'template_id': template.id,
-             })
-            return werkzeug.utils.redirect('/signage/%s/edit_area' %new_area.id)
-
-    # ~ @http.route(['/signage/<string:signage>/<string:area>/editSubmenu'],type='http', auth='user', website=True)
-    # ~ def signage_area_edit_submenu(self, signage, **post):
-
-    ## DEMO
-    @http.route(['/signage/view/demo'], type='http', auth='public', website=True)
-    def signage_demo(self):
-        return request.render('signage.signage_demo', {})
-
-    ## DEMO
-    @http.route(['/signage/view/demo1'], type='http', auth='public', website=True)
-    def signage_demo1(self):
-        f = open('/usr/share/odoo-signage/signage/static/src/img/archive.gif')
-        gif = f.read()
-        f.close()
-        return http.send_file(StringIO(gif),mimetype='image/gif')
-
-    ## DEMO
-    @http.route(['/signage/view/demo3'], type='http', auth='public', website=True)
-    def signage_demo1(self):
-        fruits = ['Onsdag', 'Torsdag', 'Fredag', u'Måndag', 'Tisdag']
-        counts = [55, 33, 44, 22, 44]
-
-        source = ColumnDataSource(data=dict(fruits=fruits, counts=counts))
-
-        p = figure(x_range=fruits, plot_height=350, toolbar_location=None, title="Order statistik")
-        p.vbar(x='fruits', top='counts', width=0.9, source=source, legend="fruits",
-               line_color='white', fill_color=factor_cmap('fruits', palette=Spectral6, factors=fruits))
-
-        p.xgrid.grid_line_color = None
-        p.y_range.start = 0
-        p.y_range.end = 70
-        p.legend.orientation = "horizontal"
-        p.legend.location = "top_center"
-
-        _logger.warn('<<<<<<<<<<<<<<<<<  p %s' % p)
-        
-        gif = p
-        vdisplay = Xvfb()
-        vdisplay.start()
-
-        # launch stuff inside
-        # virtual display here.
-        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
-        _logger.warn('<<<<<<<<<<<<<<<<<  png %s' % png.tobytes(encoder_name='raw'))
-        svg = get_svgs(p, webdriver=webdriver_control.create())    
-        _logger.warn('<<<<<<<<<<<<<<<<<  svg %s' % svg)
-
-        vdisplay.stop()
-        return http.send_file(StringIO(svg),mimetype='image/svg-xml')        
-
-    @http.route(['/signage_image/orders.svg'], type='http', auth='public', website=True)
-    def signage_image_orders(self):
-        fruits = ['Onsdag', 'Torsdag', 'Fredag', u'Måndag', 'Tisdag']
-        counts = [55, 33, 44, 22, 44]
-
-        source = ColumnDataSource(data=dict(fruits=fruits, counts=counts))
-
-        p = figure(x_range=fruits, plot_height=350, toolbar_location=None, title="Order statistik")
-        p.vbar(x='fruits', top='counts', width=0.9, source=source, legend="fruits",
-               line_color='white', fill_color=factor_cmap('fruits', palette=Spectral6, factors=fruits))
-
-        p.xgrid.grid_line_color = None
-        p.y_range.start = 0
-        p.y_range.end = 70
-        p.legend.orientation = "horizontal"
-        p.legend.location = "top_center"
-
-        _logger.warn('<<<<<<<<<<<<<<<<<  p %s' % p)
-
-        #show(p)
-        #p.output_backend = "svg"
-        #export_svgs(p, filename="plot.svg")
-        #t = NamedTemporaryFile(suffix=".svg")
-        #export_svgs(p, filename=t.name, webdriver=WebDriver())
-        #t.write(p)
-        #t.seek(0)
-        #print(t.read())
-        #t.close()
-        
-        vdisplay = Xvfb()
-        vdisplay.start()
-
-        # launch stuff inside
-        # virtual display here.
-        png = get_screenshot_as_png(p, webdriver=webdriver_control.create())    
-        _logger.warn('<<<<<<<<<<<<<<<<<  png %s' % png)
-
-        vdisplay.stop()
-
-        # launch stuff inside virtual display here.
-        # It starts/stops around this code block.
-
-        # export_png(p, filename="plot.png")
-        # p.output_backend = "svg"
-        return http.send_file(StringIO(png),mimetype='image/png')
+  
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

@@ -19,6 +19,19 @@
 #
 ##############################################################################
 
+# SPECIFIC CODE FOR PROJECT / MODULE
 import signage
+
+# GENERIC CODE FOR ROUTING
+# 1. ROUTING (INDEX / SHOW)
+# 2. INSERT
+# 3. UPDATE
+# 4. DELETE
+# 5. UNASSIGNED / OTHER
+import confirm_1_routing
+import confirm_2_insert
+import confirm_3_edit
+import confirm_4_delete
+import confirm_5_unassigned
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
