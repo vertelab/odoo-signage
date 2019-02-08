@@ -2,7 +2,13 @@
 <odoo>
   <!-- ## JAKOB KRABBE 2019-01-24 -->
   <!-- ## COMPATIBLE WITH ODOO 10 -->
-  <!-- ## EDIT SHOWCASE -->
+  <!-- ## INDEX SHOWCASE -->
+  <!--
+       This file contain three parts.
+       ** >> 1. Code for the index page to the project / module.
+       2. Code for all templates that can be selected.
+       3. Code for ... hmm... something good! :-)
+  -->
   <template id="signage_list" name="Signage List">
     <title>Edit your showcase</title>
     <t t-call="website.layout">
@@ -28,7 +34,7 @@
                     <!-- ## MENU :: EDIT -->
                     <!--
                          # MENU = SIGNAGE
-                         #/signage/admin/menu/[name]/edit
+                         #/signage/admin/menu/{menu.name}/edit
                     -->
                     <a t-att-href="'/signage/admin/menu/%s/edit' % signage.id">
                       <span class="fa fa-pencil" style="margin: 0 auto;" data-original-title="Edit menu" title="Edit menu" border="0" />
@@ -36,7 +42,7 @@
                     <!-- ## MENU :: VIEW WITH TOKEN -->
                     <!--
                          # SHOW + TOKEN
-                         # /signage/view/menu/{menu.name}/submenu.name/all?token=123
+                         # /signage/view/menu/{menu.name}/all?token=123
                     -->
                     Click to view, with token:
                     <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
@@ -105,16 +111,7 @@
                   </div>
                 </div>
                 <!-- ## ADD AREA -->
-                <!--
-                     <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new area" title="Add new area" />
-                     <a t-att-href="'/signage/%s/new_area' % (signage.name)" title="Add area to project">
-                     <span>New Area</span>
-                     </a>
-                -->
-                <form t-att-action="'/signage/%s/new_area' % (signage.name)" method="post">
-                  <input type="text" width="8" name="title" />
-                  <input type="submit" value="Add Area" />
-                </form>
+ 
                 <!-- // ## CONTENT :: EDIT -->
               </div>
             </div>
@@ -125,17 +122,12 @@
           <div class="col-sm-8">
             <!-- ## 2019-02-04 :: TEMPLATE SELECTION -->
             <!--
-                 The hard and complicated way:
-                 https://stackoverflow.com/questions/43463916/create-radio-button-condition-in-odoo-9
-            -->
-            <!--
                  Bootstrap Radio Buttons, for the best developing copy/paste experience.
                  https://www.w3schools.com/bootstrap/bootstrap_forms_inputs.asp
-                 
             -->
             <form action="/signage/admin/menu/insert" method="post">
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_1" checked="1" />
+                <input type="radio" name="default_layout" value="signage.showcase_1" checked="1" />
                 <!--
                      <img src="/signage/static/src/img/documentation.gif" />
                 -->
@@ -300,4 +292,187 @@
       </div>
     </t>
   </template>
+  <!--
+       This file contain three parts.
+       1. Code for the index page to the project / module.
+       ** >> 2. Code for all templates that can be selected.
+       3. Code for ... hmm... something good! :-)
+  -->
+  <!-- ## SHOW 1 PAGES / AREAS (1) -->
+  <template id="showcase_1" name="Showcase 1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[0]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 2 PAGES / AREAS (2) -->
+  <template id="showcase_2_1" name="Showcase 2:1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 2 PAGES / AREAS (1 + 1) -->
+  <template id="showcase_2_2" name="Showcase 2:2">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[0]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 3 PAGES / AREAS (3 in a row) -->
+  <template id="showcase_3_1" name="Showcase 3:1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[1]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 3 PAGES / AREAS (2 + 1) -->
+  <template id="showcase_3_2" name="Showcase 3:2">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 3 PAGES / AREAS (1 + 2) -->
+  <template id="showcase_3_3" name="Showcase 3:3">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-12" t-raw="area_list[0]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 4 PAGES / AREAS (2 + 2) -->
+  <template id="showcase_4" name="Showcase 4">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[2]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[3]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 5 PAGES / AREAS (3 + 2) -->
+  <template id="showcase_5_1" name="Showcase 5:1">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[1]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[3]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[4]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!-- ## SHOW 5 PAGES / AREAS (2 + 3) -->
+  <template id="showcase_5_2" name="Showcase 5:2">
+    <t t-call="signage.layout">
+      <title>Showcase</title>
+      <div class="container" style="width: 100%;">
+        <!--
+             <div class="row">
+             <div class="col-sm-4" />
+             <div class="col-sm-4" style="text-align:center">
+             <h3>
+             <a href="/signage/" title="Index" alt="Index">
+             <i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true" />
+             </a>
+             Edit Signage Templates
+             </h3>
+             </div>
+             <div class="col-sm-4" />
+             </div>
+        -->
+        <div class="row">
+          <div class="col-sm-6" t-raw="area_list[0]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[1]" style="text-align:center" />
+        </div>
+        <div class="row">
+          <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[3]" style="text-align:center" />
+          <div class="col-sm-4" t-raw="area_list[4]" style="text-align:center" />
+        </div>
+      </div>
+    </t>
+  </template>
+  <!--
+       This file contain three parts.
+       1. Code for the index page to the project / module.
+       2. Code for all templates that can be selected.
+       ** >> 3. Code for ... hmm... something good! :-)
+  -->
+  <record id="signage.showcase_1" model="ir.ui.view">
+    <field name="number_of_areas">1</field>
+  </record>
+  <record id="signage.showcase_2_1" model="ir.ui.view">
+    <field name="number_of_areas">2</field>
+  </record>
+  <record id="signage.showcase_2_2" model="ir.ui.view">
+    <field name="number_of_areas">2</field>
+  </record>
+  <record id="signage.showcase_3_1" model="ir.ui.view">
+    <field name="number_of_areas">3</field>
+  </record>
+  <record id="signage.showcase_3_2" model="ir.ui.view">
+    <field name="number_of_areas">3</field>
+  </record>
+  <record id="signage.showcase_3_3" model="ir.ui.view">
+    <field name="number_of_areas">3</field>
+  </record>
+  <record id="signage.showcase_4" model="ir.ui.view">
+    <field name="number_of_areas">4</field>
+  </record>
+  <record id="signage.showcase_5_1" model="ir.ui.view">
+    <field name="number_of_areas">5</field>
+  </record>
+  <record id="signage.showcase_5_2" model="ir.ui.view">
+    <field name="number_of_areas">5</field>
+  </record>
 </odoo>

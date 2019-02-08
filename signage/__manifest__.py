@@ -25,10 +25,9 @@ Financed by CEVT AB
         'signage_view.xml',
         'templates.xml',
         'view/tmpl_demo_index.xml',
+        'view/index.xml', # FIRST PAGE: Select, edit, post, publish and delete posts from the service.
         'view/tmpl_layout.xml',
         'view/tmpl_post_edit.xml',
-        'view/tmpl_showcase_view.xml',
-        'view/tmpl_signage_list.xml',
         'view/tmpl_signage_overview.xml',
         'view/tmpl_signage_page_template.xml',
     ],

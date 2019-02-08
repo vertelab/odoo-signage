@@ -46,50 +46,32 @@ class WebsiteSignage(http.Controller):
     @http.route(['/signage/admin/menu/insert'],type='http', auth='user', csrf=False, website=True)
     def signage_menu_insert(self, **post):
         intAreas = 0
-        
-        if post.get('default_layout') == "showcase_1":
-            intAreas = 1
-            intTemplateID = 1
-        elif post.get('default_layout') == "showcase_2_1":
-            intAreas = 2
-            intTemplateID = 2
-        elif post.get('default_layout') == "showcase_2_2":
-            intAreas = 2
-            intTemplateID = 3
-        elif post.get('default_layout') == "showcase_3_1":
-            intAreas = 3
-            intTemplateID = 4
-        elif post.get('default_layout') == "showcase_3_2":
-            intAreas = 3
-            intTemplateID = 5
-        elif post.get('default_layout') == "showcase_3_3":
-            intAreas = 3
-            intTemplateID = 6
-        elif post.get('default_layout') == "showcase_4":
-            intAreas = 4
-            intTemplateID = 7
-        elif post.get('default_layout') == "showcase_5_1":
-            intAreas = 5
-            intTemplateID = 8
-        elif post.get('default_layout') == "showcase_5_2":
-            intAreas = 5
-            intTemplateID = 9
              
-        # ~ _logger.warn('<<<<<<<<<<<<<<<<<  intAreas: %s' % intAreas )
-        # ~ _logger.warn('<<<<<<<<<<<<<<<<<  title: %s' % post.get('title'))
-        # ~ _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout') )
-        # ~ _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout')[0] )
-        # ~ _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout'))]) )
-        # ~ _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])]) )
+        _logger.warn('<<<<<<<<<<<<<<<<<  intAreas: %s' % intAreas )
+        _logger.warn('<<<<<<<<<<<<<<<<<  title: %s' % post.get('title'))
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout') )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout')[0] )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout'))]) )
+        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])]) )
         title = ""
         if post.get('title') == "":
             title = "Showcase"
         else:
             title = post.get('title')
+            
+        template_id = request.env['ir.ui.view'].search([('key','=', post.get('default_layout') )] )
+        #_logger.warn('<<<<<<<<<<<<<<<<<  template_id: %s' % template_id )
 
+        if len(template_id) > 0:
+            template_id = template_id[0].id
+        else:
+            template_id = None
+    
+        _logger.warn('<<<<<<<<<<<<<<<<<  template_id: %s' % template_id )
+        
         new_signage = request.env['signage.signage'].create({
             'name': title ,
-            'template_id': request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])])
+            'template_id': template_id,
         })
         
         # LOOP THOUGH ALL AREAS, AS SELECTED

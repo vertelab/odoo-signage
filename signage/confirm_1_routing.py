@@ -48,3 +48,20 @@ class WebsiteSignage(http.Controller):
         return request.render('signage.signage_overview', {'signages': request.env['signage.signage'].search([('state','=','open')])})
 
 
+    # DIRECT URL TO THE ROTATING PAGE
+    # SHOW + TOKEN
+    # /signage/view/{menu.name}/all
+    @http.route(['/signage/view/menu/<string:signage>/all'],type='http', auth='public', website=True)
+    def signage_view_all(self, signage, **post): #return the last page from a specified area
+        signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
+        if signage:
+            if signage.token and post.get('token') and signage.token == post.get('token'):
+                area_list = []
+                for area in signage.area_ids.sorted(lambda a: a.name):
+                    res = area.get_next_page().template_id.render({'signage': signage, 'area': area, 'page': area.last_page, 'hide_header': True})
+                    area_list.append(res)
+                return request.render(signage.template_id.key, {'signage': signage, 'area_list': area_list})
+            else:
+                return request.render('website.403', {})
+        return False
+
