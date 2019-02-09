@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <template id="signage_demo" name="Demo Page for Signage">
-
+            <t t-call="website.layout"/>
         </template>
     </data>
 </openerp>
