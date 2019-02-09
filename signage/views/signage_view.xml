@@ -140,10 +140,12 @@
             <field name="key2">client_action_multi</field>
             <field name="value" eval="'ir.actions.server,%s' %ref('signage.calculate_token')" />
         </record>
+<!--
         <record id="menu_demo" model="website.menu">
             <field name="name">Signage Demo</field>
             <field name="url">/signage/demo</field>
             <field name="parent_id" ref="website.main_menu" />
         </record>
+-->
     </data>
 </openerp>
