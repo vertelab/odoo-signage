@@ -53,7 +53,7 @@ _logger = logging.getLogger(__name__)
 # 3. UPDATE
 # 4. DELETE
 # 5. UNASSIGNED / OTHER <--- ***
-# CODE + PROJECT IS COMPATIBLE WITH ODOO 10.
+# THIS PROJECT IS COMPATIBLE WITH ODOO 10.
 class WebsiteSignage(http.Controller):
 
     ## DEMO

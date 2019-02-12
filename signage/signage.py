@@ -58,7 +58,9 @@ class signage(models.Model):
 
     @api.multi
     def get_token(self):
-        token = hashlib.sha1('%s%s' %(self.name, datetime.datetime.now())).hexdigest()
+        for signage in self:
+            token = hashlib.sha1('%s%s' %(signage.name, datetime.datetime.now())).hexdigest()
+            signage.token = token
         return token
 
 
@@ -271,7 +273,7 @@ class WebsiteSignage(http.Controller):
             for page in area.page_ids:
                 # FONTS AS ICONS
                 # https://fontawesome.com/v4.7.0/cheatsheet/
-                # EDIT = fa-pencil
+                # UPDATE = fa-pencil
                 # https://fontawesome.com/v4.7.0/icon/pencil
                 # /signage/admin/post/{post.id}/edit
                 strText2 += "<div><a href=\"/signage/admin/post/%s/edit/\" title=\"View / Edit post\" alt=\"View / Edit post\">" % (page.id)

@@ -37,7 +37,8 @@ _logger = logging.getLogger(__name__)
 # 3. UPDATE
 # 4. DELETE
 # 5. UNASSIGNED / OTHER
-# CODE + PROJECT IS COMPATIBLE WITH ODOO 10.
+
+# THIS PROJECT IS COMPATIBLE WITH ODOO 10.
 class WebsiteSignage(http.Controller):
 
     # INSERT NEW MENU
@@ -45,19 +46,24 @@ class WebsiteSignage(http.Controller):
     # FORM ACTION ="/signage/admin/menu/insert" >> POST
     @http.route(['/signage/admin/menu/insert'],type='http', auth='user', csrf=False, website=True)
     def signage_menu_insert(self, **post):
-        intAreas = 0
              
-        _logger.warn('<<<<<<<<<<<<<<<<<  intAreas: %s' % intAreas )
-        _logger.warn('<<<<<<<<<<<<<<<<<  title: %s' % post.get('title'))
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout') )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % post.get('default_layout')[0] )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout'))]) )
-        _logger.warn('<<<<<<<<<<<<<<<<<  default_layout: %s' % request.env['ir.ui.view'].search([('key','=', post.get('default_layout')[0])]) )
+
         title = ""
         if post.get('title') == "":
             title = "Showcase"
         else:
             title = post.get('title')
+        
+       
+        # LOOP AND CHECK FOR DUPLICATES! :-)
+        while request.env['signage.signage'].search_count([('name', '=', title)]) > 0:
+            arrTitle = title.split("_")
+            if len(arrTitle) > 1:
+                intCounter = int(arrTitle[1]) + 1
+            else:
+                intCounter = 1
+            # NEW TITLE NAME
+            title = arrTitle[0] + "_" + str(intCounter)
             
         template_id = request.env['ir.ui.view'].search([('key','=', post.get('default_layout') )] )
         #_logger.warn('<<<<<<<<<<<<<<<<<  template_id: %s' % template_id )
@@ -73,12 +79,17 @@ class WebsiteSignage(http.Controller):
             'name': title ,
             'template_id': template_id,
         })
+
+        #new_signage.token = new_signage.get_token()
+        new_signage.get_token()
         
-        # LOOP THOUGH ALL AREAS, AS SELECTED
-        i = 1
-        # ~ while i < intAreas:
-                       
-            # ~ intAreas += 1
+        if new_signage.template_id:      
+            for area in range(1, new_signage.template_id.number_of_areas +1):
+                request.env['signage.area'].create({
+                    'signage_id': new_signage.id,
+                    'name': 'area_%s' % area ,
+                    
+                })
         
         return werkzeug.utils.redirect('/signage/')
 

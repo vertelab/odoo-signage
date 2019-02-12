@@ -10,7 +10,7 @@
        3. Code for ... hmm... something good! :-)
   -->
   <template id="signage_list" name="Signage List">
-    <title>Edit your showcase</title>
+    <title>Master Your Showcases</title>
     <t t-call="website.layout">
       <div class="row">
         <div class="col-sm-4" />
@@ -28,7 +28,7 @@
                   <h5 class="mb-0">
                     <!-- ## MENU :: COLLAPSE -->
                     <span class="fa fa-folder" style="margin: 0 auto;" data-original-title="Collapse project" t-att-title="'Collapse project, %s' % signage.name" />
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" t-att-data-target="'#collapse%s' % signage.id" aria-expanded="false" aria-controls="collapse" title="Add / edit / view">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" t-att-data-target="'#collapse%s' % signage.id" aria-expanded="false" aria-controls="collapse" title="Collapse">
                       <span t-field="signage.name" />
                     </button>
                     <!-- ## MENU :: EDIT -->
@@ -39,13 +39,16 @@
                     <a t-att-href="'/signage/admin/menu/%s/edit' % signage.id">
                       <span class="fa fa-pencil" style="margin: 0 auto;" data-original-title="Edit menu" title="Edit menu" border="0" />
                     </a>
+                    <span>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</span>
                     <!-- ## MENU :: VIEW WITH TOKEN -->
                     <!--
                          # SHOW + TOKEN
                          # /signage/view/menu/{menu.name}/all?token=123
+                         # https://fontawesome.com/v4.7.0/icons/
+                         # https://fontawesome.com/v4.7.0/icon/eye
                     -->
-                    Click to view, with token:
                     <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
+                      <i class="fa fa-eye" />
                       <span t-field="signage.name" />
                     </a>
                     <!-- ## PROJECT :: VIEW TO EDIT DATA  -->
@@ -65,45 +68,18 @@
                         Limit
                         <span t-field="area.limit" />
                         <ul>
+                          <!--
+                               ## LOOP THROUGH ALL PAGES
+                               # https://fontawesome.com/v4.7.0/icons/
+                               # https://fontawesome.com/v4.7.0/icon/file
+                          -->
                           <t t-foreach="area.page_ids" t-as="page">
                             <li>
                               <!-- ## LOOK -->
-                              <span>hello world!</span>
-                              <span class="fa fa-file-code-o" style="margin: 0 auto;" data-original-title="Get content for project" t-att-title="'Get content for project %s' % signage.id" />
-                              Look, edit:
-
-                              <a t-att-href="'/signage/%s/edit' % page.id" target="_blank" title="View and/or edit page.">
-                                <span t-field="page.name" />
-                              </a>
-                              <br />
-                              <!-- ## DELETE PAGE -->
-                              <!--  
-                                   <span class="fa fa-trash fa-2x" style="margin: 0 auto;" data-original-title="Delete. Can NOT undo!" t-att-title="'Delete %. Ca NOT undo! %s' % page.name" />
-                              -->
-                              <span class="fa fa-trash" style="margin: 0 auto;" data-original-title="Delete. Can NOT undu!" title="Delete. Can NOT undu!" />
-                              <a t-att-href="'/signage/%s/delete' % page.id">
-                                <span t-field="page.name" />
-                              </a>
-                              Offset
-                              <span t-field="page.offset" />
+                              <span class="fa fa-file" style="margin: 0 auto;" data-original-title="Get content for project" t-att-title="'Get content for project %s' % signage.id" />
+                              <span t-field="page.name" />
                             </li>
                           </t>
-                          <li>
-                            <!-- ## ADD PAGE-->
-                            <!--
-                                 <span class="fa fa-plus-square fa-2x" style="margin: 0 auto;" data-original-title="Add new page" title="Add new page" />
-                                 <a t-att-href="'/signage/%s/%s/new' % (signage.name, area.name)" title="Add page to project">
-                                 <span>New Page</span>
-                                 </a>
-                                 # /signage/admin/post/{menu.name}/{area.name}/insert        
-                                 strText3 = "<div><form action=\"/signage/admin/post/%s/%s/insert\" method=\"post\"> \n" % (signage.name, area.name)
-                            -->
-                            <form t-att-action="'/signage/admin/post/%s/%s/insert' % (signage.name, area.name)" method="post">
-                              <input type="text" width="4" name="title" />
-                              <input type="hidden" name="returnPath" value="signage" />
-                              <input type="submit" value="Add Page..." />
-                            </form>
-                          </li>
                         </ul>
                       </li>
                     </ul>
@@ -111,7 +87,6 @@
                   </div>
                 </div>
                 <!-- ## ADD AREA -->
- 
                 <!-- // ## CONTENT :: EDIT -->
               </div>
             </div>
@@ -137,56 +112,56 @@
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_2_1" />
+                <input type="radio" name="default_layout" value="signage.showcase_2_1" />
                 <span>Showcase layout 2:1</span>
                 <img src="/signage/static/src/img/showcase_2_1.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_2_2" />
+                <input type="radio" name="default_layout" value="signage.showcase_2_2" />
                 <span>Showcase layout 2:2</span>
                 <img src="/signage/static/src/img/showcase_2_2.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_3_1" />
+                <input type="radio" name="default_layout" value="signage.showcase_3_1" />
                 <span>Showcase layout 3:1</span>
                 <img src="/signage/static/src/img/showcase_3_1.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_3_2" />
+                <input type="radio" name="default_layout" value="signage.showcase_3_2" />
                 <span>Showcase layout 3:2</span>
                 <img src="/signage/static/src/img/showcase_3_2.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_3_3" />
+                <input type="radio" name="default_layout" value="signage.showcase_3_3" />
                 <span>Showcase layout 3:3</span>
                 <img src="/signage/static/src/img/showcase_3_3.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_4" />
+                <input type="radio" name="default_layout" value="signage.showcase_4" />
                 <span>Showcase layout 4</span>
                 <img src="/signage/static/src/img/showcase_4.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_5_1" />
+                <input type="radio" name="default_layout" value="signage.showcase_5_1" />
                 <span>Showcase layout 5:1</span>
                 <img src="/signage/static/src/img/showcase_5_1.png" />
                 <br />
                 <br />
               </label>
               <label class="radio-inline">
-                <input type="radio" name="default_layout" value="showcase_5_2" />
+                <input type="radio" name="default_layout" value="signage.showcase_5_2" />
                 <span>Showcase layout 5:2</span>
                 <img src="/signage/static/src/img/showcase_5_2.png" />
                 <br />
@@ -246,6 +221,9 @@
     </t>
   </template>
   <template id="signage_listxx" name="Signage List">
+    <!--
+         Original code. Not in use.
+    -->
     <t t-call="website.layout">
       <div id="wrap" class="container">
         <div class="oe_structure oe_empty" />

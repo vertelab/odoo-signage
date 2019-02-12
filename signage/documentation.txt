@@ -48,7 +48,8 @@ https://fontawesome.com/v4.7.0/cheatsheet/
 
 edit = fa-pencil
 https://fontawesome.com/v4.7.0/icon/pencil
-
+# ICONS >> ALL ICONS >> 41 New Icons in 4.7
+# https://fontawesome.com/v4.7.0/icons/
 # *******************************************
 
 # DESIGN PATTERN // COPY/PASTE - READY FOR ANY PROJECT
