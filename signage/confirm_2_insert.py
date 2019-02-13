@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 # confirm_2_insert.py
 # -*- coding: utf-8 -*-
 ##############################################################################
@@ -41,6 +43,14 @@ _logger = logging.getLogger(__name__)
 # THIS PROJECT IS COMPATIBLE WITH ODOO 10.
 class WebsiteSignage(http.Controller):
 
+
+    def force_to_unicode(text):
+        # ~ "If text is unicode, it is returned as is. If it's str, convert it to Unicode using UTF-8 encoding"
+        # ~ Source:
+        # ~ https://gist.github.com/gornostal/1f123aaf838506038710
+        return text if isinstance(text, unicode) else text.decode('utf8')
+
+
     # INSERT NEW MENU
     # MENU = SIGNAGE
     # FORM ACTION ="/signage/admin/menu/insert" >> POST
@@ -54,6 +64,15 @@ class WebsiteSignage(http.Controller):
         else:
             title = post.get('title')
         
+        # REPLACE FROM BAD/INVALID CHARS
+        title = title.encode('utf-8')
+        title = title.replace(" ", "_")
+        # ~ title = title.replace("å", "a")
+        # ~ title = title.replace("Å", "A")
+        # ~ title = title.replace("ä", "a")
+        # ~ title = title.replace("Ä", "A")
+        # ~ title = title.replace("ö", "o")
+        # ~ title = title.replace("Ö", "O")
        
         # LOOP AND CHECK FOR DUPLICATES! :-)
         while request.env['signage.signage'].search_count([('name', '=', title)]) > 0:

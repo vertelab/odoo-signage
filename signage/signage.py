@@ -57,9 +57,15 @@ class signage(models.Model):
     token = fields.Char(string="Token", help="Token calculates from Action 'Calculate Token'. Without token, this signage will be public.")
 
     @api.multi
+    def replace_non_ascii_chars(sentence):
+        sentence = sentence.replace(u"ä","a")
+        return sentence
+  
+    @api.multi
     def get_token(self):
         for signage in self:
-            token = hashlib.sha1('%s%s' %(signage.name, datetime.datetime.now())).hexdigest()
+            # ~ token = hashlib.sha1(u'%s%s' %(signage.name.replace(u"ä", "a"), datetime.datetime.now())).hexdigest()
+            token = hashlib.sha1(u'%s%s' %( signage.name.replace_non_ascii_chars(), datetime.datetime.now())).hexdigest()
             signage.token = token
         return token
 
