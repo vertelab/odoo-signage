@@ -34,7 +34,7 @@
                     <!-- ## MENU :: EDIT -->
                     <!--
                          # MENU = SIGNAGE
-                         #/signage/admin/menu/{menu.name}/edit
+                         #/signage/admin/menu/{menu.id}/update
                     -->
                     <a t-att-href="'/signage/admin/menu/%s/edit' % signage.id">
                       <span class="fa fa-pencil" style="margin: 0 auto;" data-original-title="Edit menu" title="Edit menu" border="0" />
@@ -47,14 +47,14 @@
                          # https://fontawesome.com/v4.7.0/icons/
                          # https://fontawesome.com/v4.7.0/icon/eye
                     -->
-                    <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name, signage.token)" target="_blank" title="View with token.">
+                    <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name_url, signage.token)" target="_blank" title="View with token.">
                       <i class="fa fa-eye" />
                       <span t-field="signage.name" />
                     </a>
                     <!-- ## PROJECT :: VIEW TO EDIT DATA  -->
                     <!--
                          # SHOW + TOKEN
-                         # /signage/view/menu/[name]/all/
+                         # /signage/view/menu/{menu.id}/all/
                     -->
                   </h5>
                 </div>

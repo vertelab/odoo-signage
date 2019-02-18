@@ -20,4 +20,21 @@
       </div>
     </t>
   </template>
+  <!-- Front-end/Back-end integration -->
+  <!-- User Navbar -->
+  <template id="content_new_signage" inherit_id="website.user_navbar">
+    <xpath expr="//div[@id='o_website_add_page_modal']//ul" position="inside">
+      <li groups="website.group_website_designer">
+        <a href="#" data-action="new_signage">
+          <!-- 
+               https://fontawesome.com/v4.7.0/icons/
+               https://fontawesome.com/v4.7.0/icon/television ... fa-television
+               https://fontawesome.com/v4.7.0/icon/film ... fa-film 
+          -->
+          <i class="fa fa-television" />
+          <p>New Signage</p>
+        </a>
+      </li>
+    </xpath>
+  </template>
 </odoo>

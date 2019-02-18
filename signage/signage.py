@@ -41,6 +41,11 @@ from bokeh.io.export import get_screenshot_as_png
 from bokeh.io.export import webdriver_control
 from xvfbwrapper import Xvfb
 
+# SLUGIFY --> CODE FOR PROPER URL ROUTING
+# https://www.odoo.com/forum/help-1/question/encode-characters-from-form-odoo-10-145669
+import unicodedata
+import re
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -50,6 +55,7 @@ class signage(models.Model):
     _inherit = ['mail.thread']
 
     name = fields.Char(string='name')
+    name_url = fields.Char(string='name')
     template_id = fields.Many2one(comodel_name='ir.ui.view')
     area_ids = fields.One2many(comodel_name='signage.area',inverse_name='signage_id')
     state = fields.Selection([('draft','Draft'),('open','Open'),('closed','Closed')])
@@ -57,18 +63,18 @@ class signage(models.Model):
     token = fields.Char(string="Token", help="Token calculates from Action 'Calculate Token'. Without token, this signage will be public.")
 
     @api.multi
-    def replace_non_ascii_chars(sentence):
-        sentence = sentence.replace(u"ä","a")
-        return sentence
-  
-    @api.multi
     def get_token(self):
         for signage in self:
             # ~ token = hashlib.sha1(u'%s%s' %(signage.name.replace(u"ä", "a"), datetime.datetime.now())).hexdigest()
-            token = hashlib.sha1(u'%s%s' %( signage.name.replace_non_ascii_chars(), datetime.datetime.now())).hexdigest()
+            # ~ token = hashlib.sha1(u'%s%s' %( signage.name, datetime.datetime.now())).hexdigest()
+            
+            # ~ uni = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode('ascii')
+            uni = unicodedata.normalize('NFKD', signage.name_url).encode('ascii', 'ignore').decode('ascii')
+            slug = re.sub('[\W_]', ' ', uni).strip().lower()
+            signage.name_url = re.sub('[-\s]+', '-', slug)
+            token = hashlib.sha1(u'%s%s' %( signage.name_url, datetime.datetime.now())).hexdigest()
             signage.token = token
         return token
-
 
 class signage_area(models.Model):
     _name = 'signage.area'
@@ -236,7 +242,7 @@ class WebsiteSignage(http.Controller):
                 'template_id': template.id,
              })
 
-            # /signage/admin/post/{id}/edit
+            # /signage/admin/post/{post.id}/edit
             # REDIRECT >> EDIT NEW POST
             # return werkzeug.utils.redirect('/signage/admin/post/%s/edit' %new_page.id)
             # REDIRECT >> OVERVIEW

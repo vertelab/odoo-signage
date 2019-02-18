@@ -53,7 +53,7 @@ class WebsiteSignage(http.Controller):
     # /signage/view/{menu.name}/all
     @http.route(['/signage/view/menu/<string:signage>/all'],type='http', auth='public', website=True)
     def signage_view_all(self, signage, **post): #return the last page from a specified area
-        signage = request.env['signage.signage'].sudo().search([('name', '=', signage)])
+        signage = request.env['signage.signage'].sudo().search([('name_url', '=', signage)])
         if signage:
             if signage.token and post.get('token') and signage.token == post.get('token'):
                 area_list = []

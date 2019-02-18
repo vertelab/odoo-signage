@@ -107,8 +107,8 @@
           <div class="col-sm-4" t-raw="area_list[2]" style="text-align:center" />
         </div>
         <div class="row">
-          <div class="col-sm-4" t-raw="area_list[3]" style="text-align:center" />
-          <div class="col-sm-4" t-raw="area_list[4]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[3]" style="text-align:center" />
+          <div class="col-sm-6" t-raw="area_list[4]" style="text-align:center" />
         </div>
       </div>
     </t>

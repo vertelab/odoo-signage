@@ -33,6 +33,7 @@ from werkzeug.exceptions import NotFound
 import logging
 _logger = logging.getLogger(__name__)
 
+
 # GENERIC CODE FOR ROUTING
 # 1. ROUTING (INDEX / SHOW)
 # 2. INSERT <--- ***
@@ -56,7 +57,6 @@ class WebsiteSignage(http.Controller):
     # FORM ACTION ="/signage/admin/menu/insert" >> POST
     @http.route(['/signage/admin/menu/insert'],type='http', auth='user', csrf=False, website=True)
     def signage_menu_insert(self, **post):
-             
 
         title = ""
         if post.get('title') == "":
@@ -65,8 +65,8 @@ class WebsiteSignage(http.Controller):
             title = post.get('title')
         
         # REPLACE FROM BAD/INVALID CHARS
-        title = title.encode('utf-8')
-        title = title.replace(" ", "_")
+        # ~ title = title.encode('utf-8')
+        # ~ title = title.replace(" ", "_")
         # ~ title = title.replace("å", "a")
         # ~ title = title.replace("Å", "A")
         # ~ title = title.replace("ä", "a")
@@ -93,11 +93,17 @@ class WebsiteSignage(http.Controller):
             template_id = None
     
         _logger.warn('<<<<<<<<<<<<<<<<<  template_id: %s' % template_id )
+        _logger.warn('<<<<<<<<<<<<<<<<<  title: %s' % title )
         
         new_signage = request.env['signage.signage'].create({
             'name': title ,
+            'name_url': title ,
             'template_id': template_id,
+            'state': 'open',
+            'description': 'Some important text!',
         })
+
+
 
         #new_signage.token = new_signage.get_token()
         new_signage.get_token()
@@ -107,7 +113,6 @@ class WebsiteSignage(http.Controller):
                 request.env['signage.area'].create({
                     'signage_id': new_signage.id,
                     'name': 'area_%s' % area ,
-                    
                 })
         
         return werkzeug.utils.redirect('/signage/')
