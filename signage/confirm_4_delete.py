@@ -47,3 +47,23 @@ class WebsiteSignage(http.Controller):
         #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
         page.unlink()
         return werkzeug.utils.redirect('/signage/admin/menu/%s/edit' % signage.id)
+        
+        
+    # DELETE AREA (The docs... https://www.npmjs.com/package/odoo-webkit)
+    # /[project]/admin/submenu/{submenu.id}/delete
+    @http.route(['/signage/admin/submenu/<model("signage.area"):area>/delete'],type='http', auth='user', website=True)
+    def delete_postId (self, area):
+        #_logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
+        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
+        area.unlink()
+        return werkzeug.utils.redirect('/signage/' )
+
+    # DELETE [PROJECT] // SHOWCASE (The docs... https://www.npmjs.com/package/odoo-webkit)
+    # /[project]/admin/menu/{menu.id}/delete
+    @http.route(['/signage/admin/menu/<model("signage"):signage>/delete'],type='http', auth='user', website=True)
+    def delete_postId (self, signage):
+        _logger.warn('<<<<<<<<<<<<<<<<<  signage = %s' % signage)
+        #_logger.warn('<<<<<<<<<<<<<<<<<  postId = %s' % page)
+        signage.key.unlink()
+        return werkzeug.utils.redirect('/signage/' )
+

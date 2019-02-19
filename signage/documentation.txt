@@ -71,21 +71,21 @@ https://fontawesome.com/v4.7.0/icon/pencil
 /signage/
 
 # MENU = SIGNAGE
-# / project / admin / menu / ...
+# / project / admin / menu / {action}
 /[project]/admin/menu/insert
 /[project]/admin/menu/{menu.id}/edit
 /[project]/admin/menu/id/view
 /[project]/admin/menu/{menu.id}/delete
 
 # SUBMENU = AREA
-# / project / admin / submenu / ...
+# / project / admin / submenu / {action}
 /[project]/admin/submenu/id/new
 /[project]/admin/submenu/id/edit
 /[project]/admin/submenu/id/view
 /[project]/admin/submenu/{submenu.id}/delete
 
 # POST = THE ACTUAL PAGE ITSELF
-# / project / admin / strPost / ...
+# / project / admin / strPost / {action}
 /[project]/admin/post/id/new
 /[project]/admin/post/id/edit
 /[project]/admin/post/%s/updateTemplateID

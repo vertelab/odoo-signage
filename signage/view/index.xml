@@ -31,14 +31,23 @@
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" t-att-data-target="'#collapse%s' % signage.id" aria-expanded="false" aria-controls="collapse" title="Collapse">
                       <span t-field="signage.name" />
                     </button>
-                    <!-- ## MENU :: EDIT -->
+                    <!-- ## MENU :: DELETE // EDIT -->
                     <!--
-                         # MENU = SIGNAGE
-                         #/signage/admin/menu/{menu.id}/update
+                         # DELETE IF AREA == 0 ELSE EDIT PROJECT
+                         # /[project]/admin/menu/{menu.id}/delete
+                         # https://fontawesome.com/v4.7.0/icon/trash
                     -->
-                    <a t-att-href="'/signage/admin/menu/%s/edit' % signage.id">
-                      <span class="fa fa-pencil" style="margin: 0 auto;" data-original-title="Edit menu" title="Edit menu" border="0" />
-                    </a>
+                    <t t-set='nbr_areas' t-value='signage.mapped("area_ids")' />
+                    <t t-if='len(nbr_areas) == 0'>
+                      <a t-att-href="'/signage/admin/menu/%s/delete' % (signage.id)" target="_self" title="Delete Showcase.">
+                        <i class="fa fa-trash" aria-hidden="true" />
+                      </a>
+                    </t>
+                    <t t-if='len(nbr_areas) > 0'>
+                      <a t-att-href="'/signage/admin/menu/%s/edit' % signage.id">
+                        <span class="fa fa-pencil" style="margin: 0 auto;" data-original-title="Edit menu" title="Edit menu" border="0" />
+                      </a>
+                    </t>
                     <span>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</span>
                     <!-- ## MENU :: VIEW WITH TOKEN -->
                     <!--
@@ -46,6 +55,7 @@
                          # /signage/view/menu/{menu.name}/all?token=123
                          # https://fontawesome.com/v4.7.0/icons/
                          # https://fontawesome.com/v4.7.0/icon/eye
+                         # https://fontawesome.com/v4.7.0/icon/file-o
                     -->
                     <!-- ## PRINT ONLY POSTS POSSIBLE TO VIEW / TO LOOK AT -->
                     <t t-set='nbr_pages' t-value='signage.area_ids.mapped("page_ids")' />
@@ -53,6 +63,9 @@
                       <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name_url, signage.token)" target="_blank" title="View with token.">
                         <i class="fa fa-eye" />
                         <span t-field="signage.name" />
+                        <span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span>
+                        <i class="fa fa-file-o" />
+                        <span t-esc='len(nbr_pages)' />
                       </a>
                     </t>
                     <!-- ## PROJECT :: VIEW TO EDIT DATA  -->
@@ -71,6 +84,15 @@
                         <span t-field="area.name" />
                         Limit
                         <span t-field="area.limit" />
+                        <!-- ## TRASH IF NO PAGES ARE CONNECTED WITH THIS AREA
+                             # /[project]/admin/submenu/{submenu.id}/delete
+                             # https://fontawesome.com/v4.7.0/icon/trash
+                        -->
+                        <t t-if='len(nbr_pages) == 0'>
+                          <a t-att-href="'/signage/admin/submenu/%s/delete' % (area.id)" target="_self" title="Delete Area.">
+                            <i class="fa fa-trash" aria-hidden="true" />
+                          </a>
+                        </t>
                         <ul>
                           <!--
                                ## LOOP THROUGH ALL PAGES
