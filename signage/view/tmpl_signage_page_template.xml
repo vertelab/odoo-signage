@@ -36,5 +36,13 @@
         </a>
       </li>
     </xpath>
+    <xpath expr="//li[@id='install_apps']" position="after">
+      <li role="separator" class="divider" />
+      <li>
+        <a href="/signage/" data-action="new_signage">
+          <p>Edit / view Signages</p>
+        </a>
+      </li>
+    </xpath>
   </template>
 </odoo>

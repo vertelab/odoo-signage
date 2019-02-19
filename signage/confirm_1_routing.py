@@ -39,9 +39,16 @@ _logger = logging.getLogger(__name__)
 # 5. UNASSIGNED / OTHER
 # THIS PROJECT IS COMPATIBLE WITH ODOO 10.
 class WebsiteSignage(http.Controller):
+    # ORDER BY...:
+    # https://www.odoo.com/forum/help-1/question/how-to-order-by-odoo-10-145924
+    # <ul t-foreach="signages.sorted(lambda s: s.template_id)" t-as="signage">
     @http.route(['/signage','/signage/list'],type='http', auth='user', website=True)
     def signage_list(self, **post):
-        return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')])})
+        return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')], order='name asc')})
+        # ~ return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')])})
+        # ~ return request.render('signage.signage_list', {'signages': request.env['signage.signage'].search([('state','=','open')]).order='name, date'})
+
+# ~ .search([('xyz')],limit=10,offset=offset(0,10,20,30),order='name,date')
 
     @http.route(['/signage/overview'],type='http', auth='user', website=True)
     def signage_overview(self, **post):
@@ -50,7 +57,7 @@ class WebsiteSignage(http.Controller):
 
     # DIRECT URL TO THE ROTATING PAGE
     # SHOW + TOKEN
-    # /signage/view/{menu.name}/all
+    # /signage/view/menu/{menu.name}/all?token=123
     @http.route(['/signage/view/menu/<string:signage>/all'],type='http', auth='public', website=True)
     def signage_view_all(self, signage, **post): #return the last page from a specified area
         signage = request.env['signage.signage'].sudo().search([('name_url', '=', signage)])

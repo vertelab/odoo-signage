@@ -9,6 +9,7 @@ class signage(models.Model):
     _inherit = ['mail.thread']
 
     name = fields.Char(string='name')
+    name_url = fields.Char(string='name')
     template_id = fields.Many2one(comodel_name='ir.ui.view')
     area_ids = fields.One2many(comodel_name='signage.area',inverse_name='signage_id')
     state = fields.Selection([('draft','Draft'),('open','Open'),('closed','Closed')])

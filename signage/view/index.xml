@@ -47,10 +47,14 @@
                          # https://fontawesome.com/v4.7.0/icons/
                          # https://fontawesome.com/v4.7.0/icon/eye
                     -->
-                    <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name_url, signage.token)" target="_blank" title="View with token.">
-                      <i class="fa fa-eye" />
-                      <span t-field="signage.name" />
-                    </a>
+                    <!-- ## PRINT ONLY POSTS POSSIBLE TO VIEW / TO LOOK AT -->
+                    <t t-set='nbr_pages' t-value='signage.area_ids.mapped("page_ids")' />
+                    <t t-if='len(nbr_pages) > 0'>
+                      <a t-att-href="'/signage/view/menu/%s/all?token=%s' % (signage.name_url, signage.token)" target="_blank" title="View with token.">
+                        <i class="fa fa-eye" />
+                        <span t-field="signage.name" />
+                      </a>
+                    </t>
                     <!-- ## PROJECT :: VIEW TO EDIT DATA  -->
                     <!--
                          # SHOW + TOKEN
