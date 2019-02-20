@@ -20,6 +20,11 @@
       </div>
     </t>
   </template>
+  <template id="assets_frontend" inherit_id="website.assets_frontend" name="Signage Front-end assets">
+    <xpath expr="." position="inside">
+      <script type="text/javascript" src="/signage/static/src/js/main.js" />
+    </xpath>
+  </template>
   <!-- Front-end/Back-end integration -->
   <!-- User Navbar -->
   <template id="content_new_signage" inherit_id="website.user_navbar">

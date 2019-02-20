@@ -10,16 +10,24 @@ $(document).ready(function(){
  * 
  * 
  */
-odoo.define('website.contentMenu', function (require) {
+odoo.define('signage.contentMenu', function (require) {
 "use strict";
 
+var core = require('web.core');
+var base = require('web_editor.base');
+var Model = require('web.Model');
+var website = require('website.website');
 var contentMenu = require('website.contentMenu');
 
-var TopBarContent = contentMenu.TopBar.extend({
-    
+var _t = core._t;
+var qweb = core.qweb;
+
+contentMenu.TopBar.include({
+     
     new_signage: function () {
+         console.log("inne");
             website.prompt({
-            id: "editor_new_page",
+            id: "editor_new_signage",
             window_title: _t("New Showcase"),
             input: _t("Showcase Title"),
             init: function () {
@@ -46,10 +54,12 @@ var TopBarContent = contentMenu.TopBar.extend({
     
 })
 
-return {
-    'TopBar': TopBarContent,
-    'EditMenuDialog': contentMenu.EditMenuDialog,
-};
-
+//~ return {
+    //~ 'TopBar': TopBarContent,
+    //~ 'EditMenuDialog': contentMenu.EditMenuDialog,
+//~ };
+//~ return TopBarContent;
 });
 
+
+console.log("hejgggg");

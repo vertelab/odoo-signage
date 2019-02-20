@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="project_insert" name="New Signage">
+    <t t-call="website.layout">
+      <div id="wrap" class="container">
+        <div class="container">
+            <spa>hello world!!</spa>
+        </div>
+      </div>
+    </t>
+  </template>
+</odoo>

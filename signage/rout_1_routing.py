@@ -54,6 +54,14 @@ class WebsiteSignage(http.Controller):
     def signage_overview(self, **post):
         return request.render('signage.signage_overview', {'signages': request.env['signage.signage'].search([('state','=','open')])})
 
+    # NEW PROJECT
+    # /[project]/admin/menu/insert
+    @http.route(['/signage/menu/insert'],type='http', auth='user', website=True)
+    def signage_new_project(self, **post):
+        # ~ return request.render('signage.signage_overview', {'signages': request.env['signage.signage'].search([('state','=','open')])})
+        # ~ return request.render('signage.signage_overview', {'signages': request.env['signage.signage'].search([('state','=','open')])})
+        return werkzeug.utils.redirect('/signage/' )
+
 
     # DIRECT URL TO THE ROTATING PAGE
     # SHOW + TOKEN
