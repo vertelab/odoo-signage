@@ -30,7 +30,11 @@ Financed by CEVT AB
         'view/tmpl_post_edit.xml',
         'view/tmpl_signage_overview.xml',
         'view/tmpl_signage_page_template.xml',
+        
     ],
+    # RELOAD PAGE IN BROWSER FOR CHANGES TO MAKE EFFECT:
+    # http://localhost:8069/signage/static/src/xml/signage.xml
+    'qweb': ['static/src/xml/signage.xml'],
     'installable': True,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
