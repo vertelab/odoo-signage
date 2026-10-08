@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 {
     'name': 'Digital Signage',
@@ -15,7 +15,7 @@ Financed by CEVT AB
 * An area of type page consists of several subareas, each subarea are a template/view
 
     """,
-    'author': 'Vertel AB',
+    'author': 'Vertel Sverige AB',
     'website': 'http://www.vertel.se',
     'category': 'website',
     'sequence': 0,
